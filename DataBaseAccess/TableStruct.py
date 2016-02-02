@@ -1,67 +1,73 @@
 # outlines the schema for each table
 
-class FootwearDesignDetailsTable:
+class FootwearDesignDetails:
 
+	sc_tableName = "FOOTWEAR_DESIGN_DETAILS"
 	sc_columnHeaders = ("FootwearDesignId", "ProductName", "BrandName", "Description", "Cost")
 
 	def __init__(self):
-		self.m_footwearDesignId
-		self.m_productName
-		self.m_brandName
-		self.m_description
-		self.m_cost
+		self.footwearDesignDetailsFk	= None
+		self.productName				= None
+		self.brandName					= None
+		self.description				= None
+		self.cost 						= None
 
-class FootwearSelectionDetailsTable:
+class FootwearSelectionDetails:
 
+	sc_tableName = "FOOTWEAR_SELECTION_DETAILS"
 	sc_columnHeaders = ("FootwearSelectionId", "FootwearDesignDetailsFk", "Selection", "Picture")
 
 	def __init__(self):
-		self.m_footwearSelectionId
-		self.m_footwearDesignDetailsFk
-		self.m_selection
-		self.m_picture
+		self.footwearSelectionId		= None
+		self.footwearDesignDetailsFk	= None
+		self.selection					= None
+		self.picture					= None
 
-class BarcodeDetailsTable:
+class BarcodeDetails:
 
+	sc_tableName = "BARCODE_DETAILS"
 	sc_columnHeaders = ("BarcodeId", "Barcode", "FootwearSelectionDetailsFk", "US_size", "EUR_size", "UK_size", "Gender")
 
 	def __init__(self):
-		self.m_barcodeId
-		self.m_barcode
-		self.m_footwearSelectionDetailsFk
-		self.m_US_size
-		self.m_EUR_size
-		self.m_UK_size
-		self.m_gender
+		self.barcodeId 						= None
+		self.barcode 						= None
+		self.footwearSelectionDetailsFk 	= None
+		self.US_size 						= None
+		self.EUR_size 						= None
+		self.UK_size						= None
+		self.gender 						= None
 
-class InventoryInfoTable:
+class InventoryInfo:
 
+	sc_tableName = "INVENTORY_INFO"
 	sc_columnHeaders = ("InventoryDetailsId", "BarcodeDetailsFk", "X_index", "Y_index")
 
 	def __init__(self):
-		self.m_inventoryDetailsId
-		self.m_barcodeDetailsFk
-		self.m_X_index
-		self.m_Y_index
+		self.inventoryDetailsId 	= None
+		self.barcodeDetailsFk 		= None
+		self.X_index 				= None
+		self.Y_index 				= None
 
-class CustomerInfoTable:
+class CustomerInfo:
 
+	sc_tableName = "CUSTOMER_INFO"
 	sc_columnHeaders = ("CustomerInfoId", "FirstName", "MiddleName", "LastName", "Address", "PhoneNumber")
 
 	def __init__(self):
-		self.m_customerInfoId
-		self.m_firstName
-		self.m_middleName
-		self.m_lastName
-		self.m_address
-		self.m_phoneNumber
+		self.customerInfoId 	= None
+		self.firstName 			= None
+		self.middleName 		= None
+		self.lastName 			= None
+		self.address 			= None
+		self.phoneNumber 		= None
 
 class VirtualCart:
 
+	sc_tableName = "VIRTUAL_CART"
 	sc_columnHeaders = ("VirtualCartId", "CustomerInfoFk", "BarcodeDetailsFk", "NumCheckedOut")
 
 	def __init__(self):
-		self.m_virtualCartId
-		self.m_customerInfoFk
-		self.m_barcodeDetailsFk
-		self.m_numCheckout
+		self.virtualCartId 		= None
+		self.customerInfoFk 	= None
+		self.barcodeDetailsFk 	= None
+		self.numCheckout 		= None
