@@ -14,13 +14,3 @@ class DbConnect:
 
 	def getConnection(self):
 		return self.__conn
-
-	# # when only inserting or only deleting rows on DB
-	# def pushToDb(self, script):
-	# 	self.cursor.execute(script)
-	# 	self.conn.commit()
-
-	# # when running query on the DB without making changes to DB
-	# def pullFromDb(self, script):
-	# 	self.cursor.execute(script)
-	# 	return self.conn.cursor()

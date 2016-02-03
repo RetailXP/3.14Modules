@@ -10,7 +10,7 @@ class FootwearDesignDAO:
 		self.__cursor = self.__connector.cursor()
 
 	def createAnEntry(self, footwearDesignEntry):
-		tableName     = footwearDesignEntry.sc_tableName
+		tableName = FootwearDesignDetails.sc_tableName
 
 		entry = (footwearDesignEntry.footwearDesignDetailsFk,
 			     footwearDesignEntry.productName,
@@ -21,7 +21,7 @@ class FootwearDesignDAO:
 		columnHeaders = "("
 		valuePlaceHolders = "("
 
-		for header in footwearDesignEntry.sc_columnHeaders:
+		for header in FootwearDesignDetails.sc_columnHeaders:
 			columnHeaders += header
 			columnHeaders += ","
 
@@ -32,20 +32,42 @@ class FootwearDesignDAO:
 
 		valuePlaceHolders = valuePlaceHolders[:-1] # remove the last comma
 
-		script = "INSERT INTO " + tableName + " " + header + " VALUES " + valuePlaceHolders % entry
+		script = "INSERT INTO ? ? VALUES " + valuePlaceHolders
 
-		self.__cursor.execute(script)
-
+		self.__cursor.execute(script, tableName, header, entry)
 		self.__connector.commit()
 
 	def getAnEntry(self, id):
-		pass
+		tableName 		= FootwearDesignDetails.sc_tableName
+		priColHeader 	= FootwearDesignDetails.sc_columnHeaders[0]
+
+		script = "SELECT * FROM " + tableName + " WHERE " + priColHeader + " = ?"
+
+		self.__cursor.execute(script, id)
+		self.__connector.commit()
 
 	def getAllEntries(self):
-		pass
+		tableName = FootwearDesignDetails.sc_tableName
+
+		script = "SELECT * FROM " + tableName
+
+		self.__cursor.execute(script)
+		self.__connector.commit()
 
 	def delete(self, id):
-		pass
+		tableName 		= FootwearDesignDetails.sc_tableName
+		priColHeader 	= FootwearDesignDetails.sc_columnHeaders[0]
 
-	def update(self, footwearDesignEntry):
-		pass
+		script = "DELETE FROM " + tableName + "WHERE " + priColHeader + " = ?"
+
+		self.__cursor.execute(script, id)
+		self.__connector.commit()
+
+	def update(self, id, columnName, newVal):
+		tableName 		= FootwearDesignDetails.sc_tableName
+		priColHeader	= FootwearDesignDetails.sc_columnHeaders[0]
+
+		script = "UPDATE ? SET ? = ? WHERE ? = ?"
+
+		self.__cursor.execute(script, tableName, columnName, newVal, priColHeader, id)
+		self.__connector.commit()
