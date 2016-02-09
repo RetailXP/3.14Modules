@@ -1,13 +1,13 @@
 import TableStruct
+import AbstractDAO
 
 #! TODO: make sure the scoping works so that the commit is actually working
 #! TODO: consider coming up with a generic basec class for DAO so that the base classes could inherit from it
 
-class FootwearDesignDAO:
+class FootwearDesignDAO(AbstractDAO):
 
-	def __init__(self, connector):
-		self.__connector = connector.getConnection() # DbConnect
-		self.__cursor = self.__connector.cursor()
+	def __init__(self, database):
+		super.__init__(self, database)
 
 	def createAnEntry(self, footwearDesignEntry):
 		tableName = FootwearDesignDetails.sc_tableName
