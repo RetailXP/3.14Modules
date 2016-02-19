@@ -1,7 +1,10 @@
+#! TODO: make sure this behaves as expected
+import ../DbConnect
+
 class BaseDAO(Object):
 
 	def __init__(self, database, tableName, columnHeaders):
-		self.__connector 		= DbAccess(database).getConnection()
+		self.__connector 		= DbConnect(database).getConnection()
 		self.__cursor 			= self.connector.cursor()
 		self.__tableName 		= tableName
 		self.__columnHeaders 	= columnHeaders
