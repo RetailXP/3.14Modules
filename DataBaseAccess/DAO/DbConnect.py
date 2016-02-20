@@ -12,5 +12,8 @@ class DbConnect:
 		self.__conn.commit()
 		self.__conn.close()
 
+	def getDatabase(self):
+		return self.__database
+
 	def getConnection(self):
 		return self.__conn

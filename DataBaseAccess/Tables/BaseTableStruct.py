@@ -1,5 +1,11 @@
 class BaseTableStruct:
 
-	def __init__(self, tableName, columnHeaders):
-		self.m_tableName = tableName
-		self.m_columnHeaders = columnHeaders
+	# to be overloaded
+	@staticmethod
+	def getTableName():
+		pass
+
+	# to be overloaded
+	@staticmethod
+	def getColumnHeaders():
+		pass

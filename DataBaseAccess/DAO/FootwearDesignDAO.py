@@ -1,10 +1,10 @@
-from BaseDAO import BaseDAO
-import TableStruct
+import BaseDAO
+from Tables.TableStructs import FootwearDesignDetails
 
 class FootwearDesignDAO(BaseDAO):
 
 	def __init__(self, database):
-		super.__init__(self,
-					   database,
-					   FootwearDesignDetails.sc_tableName,
-					   FootwearDesignDetails.sc_columnHeaders)
+		BaseDAO.__init__(self,
+						 database,
+						 FootwearDesignDetails.sc_tableName,
+						 FootwearDesignDetails.sc_columnHeaders)

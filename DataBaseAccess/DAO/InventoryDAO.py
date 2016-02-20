@@ -1,10 +1,10 @@
-import BarcodeDAO
-import TableStructs
+import BaseDAO
+from Tables.TableStructs import InventoryInfo
 
 class InventoryDAO(BaseDAO):
 
 	def __init__(self, database):
-		super.__init__(self,
-					   database,
-					   InventoryInfo.sc_tableName,
-					   InventoryInfo.sc_columnHeaders)
+		BaseDAO.__init__(self,
+						 database,
+						 InventoryInfo.sc_tableName,
+						 InventoryInfo.sc_columnHeaders)

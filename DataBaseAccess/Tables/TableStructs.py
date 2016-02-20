@@ -1,4 +1,4 @@
-from BaseTableStruct import BaseTableStruct
+from Tables.BaseTableStruct import BaseTableStruct
 
 # outlines the schema for each table
 
@@ -6,36 +6,40 @@ class FootwearDesignDetails(BaseTableStruct):
 
 	def __init__(self):
 
-		super().__init__(self,
-						 "FOOTWEAR_DESIGN_DETAILS",
-						 ("FootwearDesignId", "ProductName", "BrandName", "Description", "Cost") )
-
 		self.footwearDesignDetailsFk	= None
 		self.productName				= None
 		self.brandName					= None
 		self.description				= None
 		self.cost 						= None
 
+	@staticmethod
+	def getTableName():
+		return "FOOTWEAR_DESIGN_DETAILS"
+
+	@staticmethod
+	def getColumnHeaders():
+		return ("FootwearDesignId", "ProductName", "BrandName", "Description", "Cost")
+
 class FootwearSelectionDetails(BaseTableStruct):
 
 	def __init__(self):
-
-		super().__init__(self,
-						 "FOOTWEAR_SELECTION_DETAILS",
-						 ("FootwearSelectionId", "FootwearDesignDetailsFk", "Selection", "Picture") )
 
 		self.footwearSelectionId		= None
 		self.footwearDesignDetailsFk	= None
 		self.selection					= None
 		self.picture					= None
 
+	@staticmethod
+	def getTableName():
+		return "FOOTWEAR_SELECTION_DETAILS"
+
+	@staticmethod
+	def getColumnHeaders():
+		return ("FootwearSelectionId", "FootwearDesignDetailsFk", "Selection", "Picture")
+
 class BarcodeDetails(BaseTableStruct):
 
 	def __init__(self):
-
-		super().__init__(self, 
-						 "BARCODE_DETAILS",
-						 ("BarcodeId", "Barcode", "FootwearSelectionDetailsFk", "US_size", "EUR_size", "UK_size", "Gender") )
 
 		self.barcodeId 						= None
 		self.barcode 						= None
@@ -45,26 +49,38 @@ class BarcodeDetails(BaseTableStruct):
 		self.UK_size						= None
 		self.gender 						= None
 
+	@staticmethod
+	def getTableName():
+		return "BARCODE_DETAILS"
+
+	@staticmethod
+	def getColumnHeaders():
+		return ("BarcodeId", "Barcode", "FootwearSelectionDetailsFk", "US_size", "EUR_size", "UK_size", "Gender")
+
 class InventoryInfo(BaseTableStruct):
 
 	def __init__(self):
 
-		super().__init__(self,
-						 "INVENTORY_INFO",
-						 ("InventoryDetailsId", "BarcodeDetailsFk", "X_index", "Y_index") )
+		BaseTableStruct.__init__(self)
 
 		self.inventoryDetailsId 	= None
 		self.barcodeDetailsFk 		= None
 		self.X_index 				= None
 		self.Y_index 				= None
 
+	@staticmethod
+	def getTableName():
+		return "INVENTORY_INFO"
+
+	@staticmethod
+	def getColumnHeaders():
+		return ("InventoryDetailsId", "BarcodeDetailsFk", "X_index", "Y_index")
+
 class CustomerInfo(BaseTableStruct):
 
 	def __init__(self):
 
-		super().__init__(self,
-						 "CUSTOMER_INFO",
-						 ("CustomerInfoId", "FirstName", "MiddleName", "LastName", "Address", "PhoneNumber") )
+		BaseTableStruct.__init__(self)
 
 		self.customerInfoId 	= None
 		self.firstName 			= None
@@ -73,15 +89,29 @@ class CustomerInfo(BaseTableStruct):
 		self.address 			= None
 		self.phoneNumber 		= None
 
+	@staticmethod
+	def getTableName():
+		return "CUSTOMER_INFO"
+
+	@staticmethod
+	def getColumnHeaders():
+		return ("CustomerInfoId", "FirstName", "MiddleName", "LastName", "Address", "PhoneNumber")
+
 class VirtualCart(BaseTableStruct):
 
 	def __init__(self):
 
-		super().__init__(self,
-						 "VIRTUAL_CART",
-						 ("VirtualCartId", "CustomerInfoFk", "BarcodeDetailsFk", "NumCheckedOut") )
+		BaseTableStruct.__init__(self)
 
 		self.virtualCartId 		= None
 		self.customerInfoFk 	= None
 		self.barcodeDetailsFk 	= None
 		self.numCheckout 		= None
+
+	@staticmethod
+	def getTableName():
+		return "VIRTUAL_CART"
+
+	@staticmethod
+	def getColumnHeaders():
+		return ("VirtualCartId", "CustomerInfoFk", "BarcodeDetailsFk", "NumCheckedOut")
