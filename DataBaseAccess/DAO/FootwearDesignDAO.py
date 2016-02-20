@@ -1,8 +1,5 @@
+from BaseDAO import BaseDAO
 import TableStruct
-import BaseDAO
-
-#! TODO: make sure the scoping works so that the commit is actually working
-#! TODO: consider coming up with a generic basec class for DAO so that the base classes could inherit from it
 
 class FootwearDesignDAO(BaseDAO):
 

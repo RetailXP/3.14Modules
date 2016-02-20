@@ -1,4 +1,4 @@
-import BaseTableStruct
+from BaseTableStruct import BaseTableStruct
 
 # outlines the schema for each table
 
@@ -6,9 +6,9 @@ class FootwearDesignDetails(BaseTableStruct):
 
 	def __init__(self):
 
-		super.__init__(self)
-		self.sc_tableName 		= "FOOTWEAR_DESIGN_DETAILS"
-		self.sc_columnHeaders 	= ("FootwearDesignId", "ProductName", "BrandName", "Description", "Cost")
+		super().__init__(self,
+						 "FOOTWEAR_DESIGN_DETAILS",
+						 ("FootwearDesignId", "ProductName", "BrandName", "Description", "Cost") )
 
 		self.footwearDesignDetailsFk	= None
 		self.productName				= None
@@ -20,9 +20,9 @@ class FootwearSelectionDetails(BaseTableStruct):
 
 	def __init__(self):
 
-		super.__init__(self)
-		self.sc_tableName 		= "FOOTWEAR_SELECTION_DETAILS"
-		self.sc_columnHeaders 	= ("FootwearSelectionId", "FootwearDesignDetailsFk", "Selection", "Picture")
+		super().__init__(self,
+						 "FOOTWEAR_SELECTION_DETAILS",
+						 ("FootwearSelectionId", "FootwearDesignDetailsFk", "Selection", "Picture") )
 
 		self.footwearSelectionId		= None
 		self.footwearDesignDetailsFk	= None
@@ -33,9 +33,9 @@ class BarcodeDetails(BaseTableStruct):
 
 	def __init__(self):
 
-		super.__init__(self)
-		self.sc_tableName 		= "BARCODE_DETAILS"
-		self.sc_columnHeaders 	= ("BarcodeId", "Barcode", "FootwearSelectionDetailsFk", "US_size", "EUR_size", "UK_size", "Gender")
+		super().__init__(self, 
+						 "BARCODE_DETAILS",
+						 ("BarcodeId", "Barcode", "FootwearSelectionDetailsFk", "US_size", "EUR_size", "UK_size", "Gender") )
 
 		self.barcodeId 						= None
 		self.barcode 						= None
@@ -49,9 +49,9 @@ class InventoryInfo(BaseTableStruct):
 
 	def __init__(self):
 
-		super.__init__(self)
-		self.sc_tableName 		= "INVENTORY_INFO"
-		self.sc_columnHeaders 	= ("InventoryDetailsId", "BarcodeDetailsFk", "X_index", "Y_index")
+		super().__init__(self,
+						 "INVENTORY_INFO",
+						 ("InventoryDetailsId", "BarcodeDetailsFk", "X_index", "Y_index") )
 
 		self.inventoryDetailsId 	= None
 		self.barcodeDetailsFk 		= None
@@ -62,9 +62,9 @@ class CustomerInfo(BaseTableStruct):
 
 	def __init__(self):
 
-		super.__init__(self)
-		self.sc_tableName 		= "CUSTOMER_INFO"
-		self.sc_columnHeaders 	= ("CustomerInfoId", "FirstName", "MiddleName", "LastName", "Address", "PhoneNumber")
+		super().__init__(self,
+						 "CUSTOMER_INFO",
+						 ("CustomerInfoId", "FirstName", "MiddleName", "LastName", "Address", "PhoneNumber") )
 
 		self.customerInfoId 	= None
 		self.firstName 			= None
@@ -77,9 +77,9 @@ class VirtualCart(BaseTableStruct):
 
 	def __init__(self):
 
-		super.__init__(self)
-		self.sc_tableName 		= "VIRTUAL_CART"
-		self.sc_columnHeaders 	= ("VirtualCartId", "CustomerInfoFk", "BarcodeDetailsFk", "NumCheckedOut")
+		super().__init__(self,
+						 "VIRTUAL_CART",
+						 ("VirtualCartId", "CustomerInfoFk", "BarcodeDetailsFk", "NumCheckedOut") )
 
 		self.virtualCartId 		= None
 		self.customerInfoFk 	= None

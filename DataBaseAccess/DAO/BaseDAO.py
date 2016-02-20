@@ -1,7 +1,8 @@
-#! TODO: make sure this behaves as expected
-import ../DbConnect
+#!/usr/bin/env python3
 
-class BaseDAO(Object):
+import DbConnect
+
+class BaseDAO:
 
 	def __init__(self, database, tableName, columnHeaders):
 		self.__connector 		= DbConnect(database).getConnection()

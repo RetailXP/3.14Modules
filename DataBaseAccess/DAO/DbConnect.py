@@ -1,4 +1,4 @@
-import sqlit3
+import sqlite3
 
 # The lifespan of DbConnect matches with FootwearDesignDAO
 
