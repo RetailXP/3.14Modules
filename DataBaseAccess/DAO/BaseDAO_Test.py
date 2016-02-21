@@ -2,10 +2,7 @@ from DAO.BaseDAO import BaseDAO
 from Tables.TableStructs import FootwearDesignDetails
 
 def main():
-	database = "/Users/jeongwon/Desktop/University_of_Waterloo/4YDP/4B/gitdir/3.14Modules/DataBaseAccess/test.db"
-
-	print(FootwearDesignDetails.getTableName())
-	print(FootwearDesignDetails.getColumnHeaders())
+	database = "/Users/jeongwonchoi/Desktop/University_of_Waterloo/4YDP/4B/GitHub/3.14Modules/DataBaseAccess/test.db"
 
 	tableName = FootwearDesignDetails.getTableName()
 	columnHeaders = FootwearDesignDetails.getColumnHeaders()
@@ -26,7 +23,6 @@ def main():
 		cost += 1
 
 	allEntries = baseDAO.selectAllEntries()
-
 	print(allEntries)
 
 	# testing "getPriKeys" method
@@ -46,10 +42,10 @@ def main():
 	print(baseDAO.selectAllEntries())
 
 	# testing "update" method
-	baseDAO.delete(FootwearDesignDetails.update(FootwearDesignDetails.getColumnHeaders()[0],
-												"2",
-												FootwearDesignDetails.getColumnHeaders()[0],
-												"1"))
+	baseDAO.update("3",
+				   FootwearDesignDetails.getColumnHeaders()[0],
+				   "1")
+	print(baseDAO.selectAllEntries())
 
 if __name__ == "__main__":
 	main()

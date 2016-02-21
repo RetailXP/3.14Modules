@@ -48,8 +48,10 @@ class BaseDAO:
 		self.__cursor.execute(script, id)
 		self.__connector.commit()
 
-	def update(self, priColHeader, id, colmmHeader, newVal):
+	def update(self, id, columnHeader, newVal):
 		script = "UPDATE " + self.__tableName + " SET " + columnHeader + "=?" + " WHERE " + self.__columnHeaders[0] + "=" + id
+
+		print(script)
 
 		self.__cursor.execute(script, newVal)
 		self.__connector.commit()

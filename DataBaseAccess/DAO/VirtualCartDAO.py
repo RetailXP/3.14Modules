@@ -1,10 +1,10 @@
-import BaseDAO
+from .BaseDAO import BaseDAO
 from Tables.TableStructs import VirtualCart
 
-class BarcodeDAO(BaseDAO):
+class VirtualCartDAO(BaseDAO):
 
 	def __init__(self, database):
 		BaseDAO.__init__(self,
 						 database,
-						 VirtualCart.sc_tableName,
-						 VirtualCart.sc_columnHeaders)
+						 VirtualCart.getTableName(),
+						 VirtualCart.getColumnHeaders())

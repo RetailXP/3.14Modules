@@ -103,10 +103,11 @@ class VirtualCart(BaseTableStruct):
 
 		BaseTableStruct.__init__(self)
 
-		self.virtualCartId 		= None
-		self.customerInfoFk 	= None
-		self.barcodeDetailsFk 	= None
-		self.numCheckout 		= None
+		self.virtualCartId 				= None
+		self.customerInfoFk 			= None
+		self.barcodeDetailsFk 			= None
+		self.numCheckout 				= None
+		self.numItemAvailableForPickup	= None
 
 	@staticmethod
 	def getTableName():
@@ -114,4 +115,4 @@ class VirtualCart(BaseTableStruct):
 
 	@staticmethod
 	def getColumnHeaders():
-		return ("VirtualCartId", "CustomerInfoFk", "BarcodeDetailsFk", "NumCheckedOut")
+		return ("VirtualCartId", "CustomerInfoFk", "BarcodeDetailsFk", "NumCheckedOut", "NumItemAvailableForPickup")
