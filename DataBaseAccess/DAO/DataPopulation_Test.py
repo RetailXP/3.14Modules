@@ -4,7 +4,7 @@ from DAO.FootwearDesignDAO import FootwearDesignDAO
 from DAO.FootwearSelectionDAO import FootwearSelectionDAO
 from DAO.InventoryDAO import InventoryDAO
 from DAO.VirtualCartDAO import VirtualCartDAO
-# from DAO. import *
+
 from Tables.TableStructs import *
 
 c_database = "/Users/jeongwonchoi/Desktop/University_of_Waterloo/4YDP/4B/GitHub/3.14Modules/DataBaseAccess/test.db"
@@ -24,6 +24,7 @@ def populateFootwearDesignDetails():
 
 		cost += 1
 
+	dao.commitDb()
 	print(dao.selectAllEntries())
 
 def populateFootwearSelectionDetails():
@@ -45,6 +46,7 @@ def populateFootwearSelectionDetails():
 			footwearDesignDetailsFk += 1
 		selectionNum = i%2+1
 
+	dao.commitDb()
 	print(dao.selectAllEntries())
 
 def populateBarcodeDetails():
@@ -72,6 +74,7 @@ def populateBarcodeDetails():
 		EUR_size += 3
 		UK_size += 3
 
+	dao.commitDb()
 	print(dao.selectAllEntries())
 
 def populateInventoryInfo():
@@ -84,6 +87,7 @@ def populateInventoryInfo():
 
 		dao.createAnEntry(entry)
 
+	dao.commitDb()
 	print(dao.selectAllEntries())
 
 def populateCustomerInfo():
@@ -101,6 +105,7 @@ def populateCustomerInfo():
 					  "Victory Mansions, London, England, Great Britain",
 					  "1984-1984-1984"))
 
+	dao.commitDb()
 	print(dao.selectAllEntries())
 
 def populateVirtualCart():
@@ -114,6 +119,7 @@ def populateVirtualCart():
 	dao.createAnEntry( (2, 2, 1, 0) )
 	dao.createAnEntry( (2, 3, 1, 0) )
 
+	dao.commitDb()
 	print(dao.selectAllEntries())
 
 def main():
@@ -123,7 +129,6 @@ def main():
 	populateInventoryInfo()
 	populateCustomerInfo()
 	populateVirtualCart()
-
 
 if __name__ == "__main__":
 	main()

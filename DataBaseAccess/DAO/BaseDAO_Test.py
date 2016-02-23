@@ -26,11 +26,11 @@ def main():
 	print(allEntries)
 
 	# testing "getPriKeys" method
-	priKey = baseDAO.getPriKeys(FootwearDesignDetails.getColumnHeaders()[0], ("1",))
+	priKey = baseDAO.getPriKeys(("1",))
 	print(priKey)
 
 	# testing "selectAnEntry" method
-	entry = baseDAO.selectAnEntry(FootwearDesignDetails.getColumnHeaders()[0], ("1",))
+	entry = baseDAO.selectAnEntry(("1",))
 	print(entry)
 
 	# testing "selectAllEntry" method
@@ -38,7 +38,7 @@ def main():
 	print(allEntries)
 
 	# testing "delete" method
-	baseDAO.delete(FootwearDesignDetails.getColumnHeaders()[0], ("1",))
+	baseDAO.delete(("1",))
 	print(baseDAO.selectAllEntries())
 
 	# testing "update" method

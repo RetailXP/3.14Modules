@@ -9,7 +9,7 @@ class BaseDAO:
 		self.__tableName 		= tableName
 		self.__columnHeaders 	= columnHeaders
 
-	def getPriKeys(self, columnHeader, columnValue):
+	def getPriKeys(self, colHeader, columnValue):
 		script = "SELECT " + self.__columnHeaders[0] + " FROM " + self.__tableName +  " WHERE " + columnHeader + "=?"
 		self.__cursor.execute(script, columnValue)
 		
@@ -28,10 +28,12 @@ class BaseDAO:
 		script = "INSERT INTO " + self.__tableName + str(self.__columnHeaders[1:]) + " VALUES " + valuePlaceHolders
 
 		self.__cursor.execute(script, entry)
-		self.__connector.commit()
 
-	def selectAnEntry(self, priColHeader, id):
-		script = "SELECT * FROM " + self.__tableName + " WHERE " + priColHeader + "=?"
+	def selectAnEntry(self, id):
+		return selectAColumn("*", id)
+
+	def selectAColumn(self, colHeader, id):
+		script = "SELECT " + colHeader + " FROM " + self.__tableName + " WHERE " + self.__columnHeaders[0] + "=?"
 		self.__cursor.execute(script, id)
 
 		return self.__cursor.fetchone()
@@ -42,11 +44,10 @@ class BaseDAO:
 
 		return self.__cursor.fetchall()
 
-	def delete(self, priColHeader, id):
-		script = "DELETE FROM " + self.__tableName + " WHERE " + priColHeader + "=?"
+	def delete(self, id):
+		script = "DELETE FROM " + self.__tableName + " WHERE " + self.__columnHeaders[0] + "=?"
 
 		self.__cursor.execute(script, id)
-		self.__connector.commit()
 
 	def update(self, id, columnHeader, newVal):
 		script = "UPDATE " + self.__tableName + " SET " + columnHeader + "=?" + " WHERE " + self.__columnHeaders[0] + "=" + id
@@ -54,4 +55,11 @@ class BaseDAO:
 		print(script)
 
 		self.__cursor.execute(script, newVal)
+
+	# according to the documentation at https://docs.python.org/2/library/sqlite3.html
+	# for the case of database being accessed by multiple connections, 
+	# and one of the processes modifies the database, the SQLite database is locked 
+	# until that transaction is committed.
+	# commitDb should be called after one DAO completes
+	def commitDb(self):
 		self.__connector.commit()
