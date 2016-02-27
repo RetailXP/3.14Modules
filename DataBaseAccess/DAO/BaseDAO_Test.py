@@ -3,8 +3,6 @@ from Service.DbConnect import DbConnect
 from DAO.BaseDAO import BaseDAO
 from Tables.TableStructs import FootwearDesignDetails
 
-# TODO: test individual methods in different functions
-
 gc_database = "/Users/jeongwonchoi/Desktop/University_of_Waterloo/4YDP/4B/GitHub/3.14Modules/DataBaseAccess/test.db"
 g_tableName = FootwearDesignDetails.getTableName()
 g_columnHeaders = FootwearDesignDetails.getColumnHeaders()
@@ -35,7 +33,7 @@ def testGetPriKeys(baseDAO):
 
 	print("Testing getPriKeys: ")
 
-	priKey = baseDAO.getPriKeys(g_columnHeaders[0],"1")
+	priKey = baseDAO.getPriKeys(g_columnHeaders[0], "1")
 	print(priKey)
 
 	print("===================================================")
@@ -50,6 +48,18 @@ def testSelectAnEntry(baseDAO):
 
 	print("===================================================")
 	print("Testing selectAnEntry----------------------complete\n\n\n")
+
+def testSelectAColumn(baseDAO):
+
+	print("Testing selectAColumn: ")
+
+	colHeader = "ProductName"
+
+	colValues = baseDAO.selectAColumn(colHeader, 4)
+	print(colValues)
+
+	print("===================================================")
+	print("Testing selectAColumn----------------------complete\n\n\n")	
 
 
 def testSelectAllEntries(baseDAO):
@@ -66,7 +76,7 @@ def testDelete(baseDAO):
 
 	print("Testing delete")
 
-	baseDAO.delete("2")
+	baseDAO.delete("1")
 	print(baseDAO.selectAllEntries())
 
 	print("===================================================")
@@ -98,6 +108,7 @@ def main():
 	testGetPriKeys(baseDAO)
 	testSelectAnEntry(baseDAO)
 	testSelectAllEntries(baseDAO)
+	testSelectAColumn(baseDAO)
 	testDelete(baseDAO)
 	testUpdate(baseDAO)
 

@@ -2,12 +2,6 @@ from Service.AndroidService import AndroidService
 from DAO.BarcodeDAO import BarcodeDAO
 from .DbConnect import DbConnect
 
-# def testNumItemsAvailable():
-# 	dbConnect = DbConnect(BarcodeDAO.getDbDir())
-# 	connector = dbConnect.getConnection()
-
-# 	service = AndroidService()
-# 	print( service.numItemsAvailable(connector, ("Barcode2",) ) )
 
 def testGetFirstPageInfo():
 	dbConnect = DbConnect(BarcodeDAO.getDbDir())
@@ -16,11 +10,22 @@ def testGetFirstPageInfo():
 	service = AndroidService()
 	print("testGetFirstPageInfo: ")
 	print( service.getFirstPageInfo( ("Barcode1",) ) )
-	# print( service.getFirstPageInfo("Barcode1") )
-	# print( service.getFirstPageInfo("Barcode2") )
+	print( service.getFirstPageInfo( ("Barcode1", "Barcode3") ) )
+	print("===================================================")
+	print("Testing getFirstPageInfo-------------------complete\n\n\n")
+
+def testGetSecondPageInfo():
+	dbConnect = DbConnect(BarcodeDAO.getDbDir())
+	connector = dbConnect.getConnection()
+
+	service = AndroidService()
+	print("testGetSecondPageInfo: ")
+	print( service.getSecondPageInfo("Barcode1") )
+	print( service.getSecondPageInfo("Barcode3") )
 
 def main():
 	testGetFirstPageInfo()
+	testGetSecondPageInfo()
 
 if __name__ == '__main__':
 	main()

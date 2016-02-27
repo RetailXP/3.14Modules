@@ -18,13 +18,16 @@ class AndroidService:
 
 		barcodeDAO = BarcodeDAO(connector)
 		barcodeColHeader = "Barcode"
-		barcodePriKey = barcodeDAO.getPriKeys(barcodeColHeader, barcode)[0]
+		barcodePriKeys = barcodeDAO.getPriKeys(barcodeColHeader, barcode)
 
 		inventoryDAO = InventoryDAO(connector)
-		inventoryPriColHeader = "InventoryDetailsId"
-		
+		barcodeDetailsFkColHeader = "BarcodeDetailsFk"
+		numItems = 0
 
-		return len( inventoryDAO.selectAColumn(inventoryPriColHeader, barcodePriKey) )
+		for barcodePriKey in barcodePriKeys:
+			numItems += len( inventoryDAO.getPriKeys(barcodeDetailsFkColHeader, barcodePriKey) )
+
+		return numItems
 
 	# given a barcode list for items to display on the first page of the app,
 	# return product names, cost and picture for the items in the received order
@@ -41,9 +44,8 @@ class AndroidService:
 		footwearSelectionFkColHeader 	= "FootwearSelectionDetailsFk"
 		for barcode in barcodes:
 			barcodePriKey = barcodeDAO.getPriKeys( barcodeColHeader, barcode )
-			barcodePriKeys.append(barcodePriKey)
-
-			footwearSelectionFks.append( barcodeDAO.selectAColumn(footwearSelectionFkColHeader, barcodePriKey) )
+			barcodePriKeys.append(barcodePriKey[0])
+			footwearSelectionFks.append( barcodeDAO.selectAColumn(footwearSelectionFkColHeader, barcodePriKey[0]) )
 
 
 		footwearSelectionDAO = FootwearSelectionDAO(connector)
@@ -52,7 +54,6 @@ class AndroidService:
 		pictures 			= list()
 		footwearDesignFkColHeader	= "FootwearDesignDetailsFk"
 		pictureColHeader			= "Picture"
-
 		for footwearSelectionPriKey in footwearSelectionFks:
 			footwearDesignFks.append( footwearSelectionDAO.selectAColumn(footwearDesignFkColHeader, footwearSelectionPriKey) )
 			pictures.append( footwearSelectionDAO.selectAColumn(pictureColHeader, footwearSelectionPriKey) )
@@ -64,16 +65,16 @@ class AndroidService:
 		costs			= list()
 		productNameColHeader 	= "ProductName"
 		costColHeader			= "Cost"
-
 		for footwearDesignPriKey in footwearDesignFks:
 			productNames.append( footwearDesignDAO.selectAColumn(productNameColHeader, footwearDesignPriKey) )
 			costs.append( footwearDesignDAO.selectAColumn(costColHeader, footwearDesignPriKey) )
 
-		# print("ProductName(len, names): " + str(len(productNames)) + productNames)
-		# print("Costs(len, costs):       " + len(costs) + costs)
-		# print("Picture(len, cost):      " + len(pictures), + pictures)
+		
+		firstPageInfo = list()
+		for i in range(0, len(barcodes)):
+			firstPageInfo.append( (productNames[i], costs[i], pictures[i]) )
 
-		return (productNames, costs, pictures)
+		return firstPageInfo
 
 
 	# given a barcode for one item to display on the second page of the app,
@@ -127,9 +128,9 @@ class AndroidService:
 
 		inventoryPriKeyColHeader = "InventoryDetailsId"
 
-		numInventory = len( footwearDesignDAO.selectAColumn(inventoryPriKeyColHeader, barcodePriKey) )
+		numInventory = self.__numItemsAvailable(connector, barcode)
 
-		return (productNane, brandName, description, cost, picture, gender, usSize, eurSize, ukSize, numInventory)
+		return (productName, brandName, description, cost, picture, gender, usSize, eurSize, ukSize, numInventory)
 
 
 	# given the customerId, barcode and quantity, check whether the requested number of
@@ -141,7 +142,12 @@ class AndroidService:
 		dbConnect = DbConnect(BarcodeDAO.getDbDir())
 		connector = dbConnect.getConnection()
 
-		if self.__numItemsAvailable(connector, barcode) < quantity:
-			return False
+		# the customer should order the exact amount. For example if there exists 1 item in the
+		# back room and the customer ordered 2 items, then the whole transaction is rejected.
+		# if returning false, the available quantity
+		numAvailableItem = self.__numItemsAvailable(connector, barcode)
+		if numAvailableItem < quantity:
+			return (False, numAvailableItem)
 
 		
+

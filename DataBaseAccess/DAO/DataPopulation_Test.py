@@ -28,7 +28,6 @@ def populateFootwearDesignDetails():
 
 		cost += 1
 
-	# dao.commitDb()
 	print(dao.selectAllEntries())
 
 def populateFootwearSelectionDetails():

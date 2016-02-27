@@ -15,13 +15,9 @@ class BaseDAO:
 	def getPriKeys(self, colHeader, columnValue):
 		script = "SELECT " + self.__columnHeaders[0] + " FROM " + self.__tableName +  " WHERE " + colHeader + "=?"
 
-		print(script)
-		print(columnValue)
-
 		self.__cursor.execute(script, (str(columnValue), ) )
 
 		queriedRows = self.__cursor.fetchall()
-		print(queriedRows)
 
 		priKeys = list()
 		for row in queriedRows:
@@ -57,13 +53,7 @@ class BaseDAO:
 
 		self.__cursor.execute(script, (str(id), ) )
 
-		queriedColumns = self.__cursor.fetchall()
-		colValues = list()
-		for col in queriedColumns:
-			print("cols: " + str(col))
-			colValues.append(col[0])
-
-		return colValues
+		return self.__cursor.fetchone()[0]
 
 	# return the whole table
 	def selectAllEntries(self):
@@ -79,8 +69,6 @@ class BaseDAO:
 
 	def update(self, id, columnHeader, newVal):
 		script = "UPDATE " + self.__tableName + " SET " + columnHeader + "=?" + " WHERE " + self.__columnHeaders[0] + "=" + id
-
-		print(script)
 
 		self.__cursor.execute(script, (str(newVal), ) )
 
