@@ -1,21 +1,35 @@
-from .DbConnect import DbConnect
-
 class BaseDAO:
 
-	def __init__(self, database, tableName, columnHeaders):
-		self.__dbConnection		= DbConnect(database)
-		self.__connector 		= self.__dbConnection.getConnection()
+	# to be overloaded
+	@staticmethod
+	def getDbDir():
+		return "/Users/jeongwonchoi/Desktop/University_of_Waterloo/4YDP/4B/GitHub/3.14Modules/DataBaseAccess/test.db"
+
+	def __init__(self, connection, tableName, columnHeaders):
+		self.__connector 		= connection
 		self.__cursor 			= self.__connector.cursor()
 		self.__tableName 		= tableName
 		self.__columnHeaders 	= columnHeaders
 
+	# given a column header and a column value, return a list of corresponding primary keys
 	def getPriKeys(self, colHeader, columnValue):
-		script = "SELECT " + self.__columnHeaders[0] + " FROM " + self.__tableName +  " WHERE " + columnHeader + "=?"
-		self.__cursor.execute(script, columnValue)
-		
-		return self.__cursor.fetchall()
+		script = "SELECT " + self.__columnHeaders[0] + " FROM " + self.__tableName +  " WHERE " + colHeader + "=?"
 
-	# assume that the entry is a tuple
+		print(script)
+		print(columnValue)
+
+		self.__cursor.execute(script, (str(columnValue), ) )
+
+		queriedRows = self.__cursor.fetchall()
+		print(queriedRows)
+
+		priKeys = list()
+		for row in queriedRows:
+			priKeys.append(row[0])
+		
+		return priKeys
+
+	# assume that the entry is a tuple corresponding to one whole row in a table
 	def createAnEntry(self, entry):
 		valuePlaceHolders = "("
 
@@ -25,19 +39,33 @@ class BaseDAO:
 			valuePlaceHolders += "?,"
 		valuePlaceHolders = valuePlaceHolders[:-1] + ")" # remove the last comma
 
-		script = "INSERT INTO " + self.__tableName + str(self.__columnHeaders[1:]) + " VALUES " + valuePlaceHolders
+		script = "INSERT INTO " + self.__tableName + " " + str(self.__columnHeaders[1:]) + " VALUES " + valuePlaceHolders
 
 		self.__cursor.execute(script, entry)
 
+	# return an entire row from a table using the primary key - id
 	def selectAnEntry(self, id):
-		return selectAColumn("*", id)
+		script = "SELECT * FROM " + self.__tableName + " WHERE " + self.__columnHeaders[0] + "=?"
 
+		self.__cursor.execute(script, (str(id), ) )
+
+		return self.__cursor.fetchall()
+
+	# given a primary key - id - return values under a column as a list
 	def selectAColumn(self, colHeader, id):
 		script = "SELECT " + colHeader + " FROM " + self.__tableName + " WHERE " + self.__columnHeaders[0] + "=?"
-		self.__cursor.execute(script, id)
 
-		return self.__cursor.fetchone()
+		self.__cursor.execute(script, (str(id), ) )
 
+		queriedColumns = self.__cursor.fetchall()
+		colValues = list()
+		for col in queriedColumns:
+			print("cols: " + str(col))
+			colValues.append(col[0])
+
+		return colValues
+
+	# return the whole table
 	def selectAllEntries(self):
 		script = "SELECT * FROM " + self.__tableName
 		self.__cursor.execute(script)
@@ -47,19 +75,18 @@ class BaseDAO:
 	def delete(self, id):
 		script = "DELETE FROM " + self.__tableName + " WHERE " + self.__columnHeaders[0] + "=?"
 
-		self.__cursor.execute(script, id)
+		self.__cursor.execute(script, (str(id), ) )
 
 	def update(self, id, columnHeader, newVal):
 		script = "UPDATE " + self.__tableName + " SET " + columnHeader + "=?" + " WHERE " + self.__columnHeaders[0] + "=" + id
 
 		print(script)
 
-		self.__cursor.execute(script, newVal)
+		self.__cursor.execute(script, (str(newVal), ) )
 
 	# according to the documentation at https://docs.python.org/2/library/sqlite3.html
 	# for the case of database being accessed by multiple connections, 
 	# and one of the processes modifies the database, the SQLite database is locked 
 	# until that transaction is committed.
-	# commitDb should be called after one DAO completes
 	def commitDb(self):
 		self.__connector.commit()

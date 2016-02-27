@@ -8,6 +8,8 @@ class DbConnect:
 		self.__database = database
 		self.__conn = sqlite3.connect(database)
 
+	# this is an important part of the DAO design. This destructor guarantees no explicit protocol. This design leverages
+	# the OOP design
 	def __del__(self):
 		self.__conn.commit()
 		self.__conn.close()

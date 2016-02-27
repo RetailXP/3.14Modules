@@ -1,3 +1,5 @@
+from Service.DbConnect import DbConnect
+
 from DAO.BarcodeDAO import BarcodeDAO
 from DAO.CustomerDAO import CustomerDAO
 from DAO.FootwearDesignDAO import FootwearDesignDAO
@@ -7,11 +9,13 @@ from DAO.VirtualCartDAO import VirtualCartDAO
 
 from Tables.TableStructs import *
 
-c_database = "/Users/jeongwonchoi/Desktop/University_of_Waterloo/4YDP/4B/GitHub/3.14Modules/DataBaseAccess/test.db"
+gc_database = "/Users/jeongwonchoi/Desktop/University_of_Waterloo/4YDP/4B/GitHub/3.14Modules/DataBaseAccess/test.db"
+gc_dbConnect = DbConnect(gc_database)
+gc_connector = gc_dbConnect.getConnection()
 
 def populateFootwearDesignDetails():
 
-	dao = FootwearDesignDAO(c_database)
+	dao = FootwearDesignDAO(gc_connector)
 
 	productName 	= "Shoe"
 	brandName   	= "Brand"
@@ -24,12 +28,12 @@ def populateFootwearDesignDetails():
 
 		cost += 1
 
-	dao.commitDb()
+	# dao.commitDb()
 	print(dao.selectAllEntries())
 
 def populateFootwearSelectionDetails():
 
-	dao = FootwearSelectionDAO(c_database)
+	dao = FootwearSelectionDAO(gc_connector)
 
 	footwearDesignDetailsFk = 1
 	selection = "Selection"
@@ -46,12 +50,12 @@ def populateFootwearSelectionDetails():
 			footwearDesignDetailsFk += 1
 		selectionNum = i%2+1
 
-	dao.commitDb()
+	# dao.commitDb()
 	print(dao.selectAllEntries())
 
 def populateBarcodeDetails():
 
-	dao = BarcodeDAO(c_database)
+	dao = BarcodeDAO(gc_connector)
 
 	barcode = "Barcode"
 	footwearSelectionDetailsFk = 1
@@ -74,12 +78,12 @@ def populateBarcodeDetails():
 		EUR_size += 3
 		UK_size += 3
 
-	dao.commitDb()
+	# dao.commitDb()
 	print(dao.selectAllEntries())
 
 def populateInventoryInfo():
 
-	dao = InventoryDAO(c_database)
+	dao = InventoryDAO(gc_connector)
 
 	for i in range(1, 20+1):
 		value = i%20+1
@@ -87,12 +91,12 @@ def populateInventoryInfo():
 
 		dao.createAnEntry(entry)
 
-	dao.commitDb()
+	# dao.commitDb()
 	print(dao.selectAllEntries())
 
 def populateCustomerInfo():
 
-	dao = CustomerDAO(c_database)
+	dao = CustomerDAO(gc_connector)
 
 	dao.createAnEntry(("Harry",
 					  "James",
@@ -105,12 +109,12 @@ def populateCustomerInfo():
 					  "Victory Mansions, London, England, Great Britain",
 					  "1984-1984-1984"))
 
-	dao.commitDb()
+	# dao.commitDb()
 	print(dao.selectAllEntries())
 
 def populateVirtualCart():
 
-	dao = VirtualCartDAO(c_database)
+	dao = VirtualCartDAO(gc_connector)
 
 	dao.createAnEntry( (1, 1, 1, 0) )
 	dao.createAnEntry( (1, 2, 2, 0) )
@@ -119,7 +123,7 @@ def populateVirtualCart():
 	dao.createAnEntry( (2, 2, 1, 0) )
 	dao.createAnEntry( (2, 3, 1, 0) )
 
-	dao.commitDb()
+	# dao.commitDb()
 	print(dao.selectAllEntries())
 
 def main():
@@ -129,6 +133,9 @@ def main():
 	populateInventoryInfo()
 	populateCustomerInfo()
 	populateVirtualCart()
+
+	# gc_connector.commit()
+
 
 if __name__ == "__main__":
 	main()
