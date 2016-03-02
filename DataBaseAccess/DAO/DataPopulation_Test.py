@@ -84,9 +84,9 @@ def populateInventoryInfo():
 
 	dao = InventoryDAO(gc_connector)
 
-	for i in range(1, 20+1):
+	for i in range(0, 20+1):
 		value = i%20+1
-		entry = (value, value, value)
+		entry = (value, value, value, value*10, value*10, 0)
 
 		dao.createAnEntry(entry)
 

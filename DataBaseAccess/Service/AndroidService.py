@@ -11,21 +11,26 @@ from Tables.TableStructs import *
 
 class AndroidService:
 
-
 	# this method is to be used in other public methods. Thus, for the purpose of 
 	# one connection per transaction, pass connector as a parameter
+
+	# given a barcode, it should return the number of items that are not reserved
 	def __numItemsAvailable(self, connector, barcode):
 
 		barcodeDAO = BarcodeDAO(connector)
 		barcodeColHeader = "Barcode"
-		barcodePriKeys = barcodeDAO.getPriKeys(barcodeColHeader, barcode)
+		barcodePriKey = barcodeDAO.getPriKeys(barcodeColHeader, barcode)[0]
 
 		inventoryDAO = InventoryDAO(connector)
 		barcodeDetailsFkColHeader = "BarcodeDetailsFk"
+		checkoutFlagColHeader ="CheckoutFlag"
 		numItems = 0
 
-		for barcodePriKey in barcodePriKeys:
-			numItems += len( inventoryDAO.getPriKeys(barcodeDetailsFkColHeader, barcodePriKey) )
+		barcodesInInventory = inventoryDAO.getPriKeys(barcodeDetailsFkColHeader, barcodePriKey)
+
+		for barcodeInInventory in barcodesInInventory:
+			if inventoryDAO.selectAColumn(checkoutFlagColHeader, barcodeInInventory) == 0:
+				numItems += 1
 
 		return numItems
 
@@ -135,9 +140,9 @@ class AndroidService:
 
 	# given the customerId, barcode and quantity, check whether the requested number of
 	# items (specified by barcode) are available in the inventory. If available, place 
-	# order and return True
-	# Otherwise, return False
-	def placeOrder(customerId, barcode, quantity):
+	# order and return (True, [InventoryDetailsId...])
+	# Otherwise, return (False, numAvailableItems)
+	def reserveInventoryIfAvailable(self, customerId, barcode, quantity):
 
 		dbConnect = DbConnect(BarcodeDAO.getDbDir())
 		connector = dbConnect.getConnection()
@@ -149,5 +154,43 @@ class AndroidService:
 		if numAvailableItem < quantity:
 			return (False, numAvailableItem)
 
-		
 
+		barcodeDAO = BarcodeDAO(connector)
+		barcodeColHeader = "Barcode"
+		barcodePriKey = barcodeDAO.getPriKeys(barcodeColHeader, barcode)[0]
+
+
+		inventoryDAO = InventoryDAO(connector)
+		barcodeDetailsFkColHeader = "BarcodeDetailsFk"
+		inventoryPriKeys = inventoryDAO.getPriKeys(barcodeDetailsFkColHeader, barcodePriKey)
+
+		checkoutFlagColHeader = "CheckoutFlag"
+		reservedInventoryIds = list()
+		for index in range(0, quantity):
+			reservedInventoryId = inventoryPriKeys[index] 
+			inventoryDAO.update(reservedInventoryId, checkoutFlagColHeader, 1)
+			reservedInventoryIds.append(reservedInventoryId)
+
+
+		virtualCartDAO = VirtualCartDAO(connector)
+		virtualCartDAO.createAnEntry( (customerId, barcodePriKey, quantity, 0) )
+
+
+		return (True, reservedInventoryIds)
+
+	def getInventoryLocation(self, reservedInventoryId):
+
+		dbConnect = DbConnect(InventoryDAO.getDbDir())
+		connector = dbConnect.getConnection()
+
+		inventoryDAO = InventoryDAO(connector)
+
+		x_indexColHeader = "X_index"
+		x_index = inventoryDAO.selectAColumn(x_indexColHeader, reservedInventoryId)
+
+		y_indexColHeader = "Y_index"
+		maxY_index = inventoryDAO.selectMax(y_indexColHeader)
+
+
+		stackOnSameX = inventoryDAO.getPriKeys(x_indexColHeader, x_index)
+		# continue later

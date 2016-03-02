@@ -67,6 +67,9 @@ class InventoryInfo(BaseTableStruct):
 		self.barcodeDetailsFk 		= None
 		self.X_index 				= None
 		self.Y_index 				= None
+		self.X_encoder				= None
+		self.Y_encoder				= None
+		self.checkoutFlag 			= None
 
 	@staticmethod
 	def getTableName():
@@ -74,7 +77,7 @@ class InventoryInfo(BaseTableStruct):
 
 	@staticmethod
 	def getColumnHeaders():
-		return ("InventoryDetailsId", "BarcodeDetailsFk", "X_index", "Y_index")
+		return ("InventoryDetailsId", "BarcodeDetailsFk", "X_index", "Y_index", "X_encoder", "Y_encoder", "CheckoutFlag")
 
 class CustomerInfo(BaseTableStruct):
 

@@ -72,6 +72,16 @@ def testSelectAllEntries(baseDAO):
 	print("===================================================")
 	print("Testing selectAllEntry---------------------complete\n\n\n")
 
+def testSelectMax(baseDAO):
+
+	print("Testing selectMax")
+
+	print( baseDAO.selectMax("Cost") )
+
+	print("===================================================")
+	print("Testing testSelectMax---------------------complete\n\n\n")	
+
+
 def testDelete(baseDAO):
 
 	print("Testing delete")

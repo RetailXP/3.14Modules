@@ -45,7 +45,7 @@ class BaseDAO:
 
 		self.__cursor.execute(script, (str(id), ) )
 
-		return self.__cursor.fetchall()
+		return self.__cursor.fetchone()
 
 	# given a primary key - id - return values under a column as a list
 	def selectAColumn(self, colHeader, id):
@@ -62,13 +62,19 @@ class BaseDAO:
 
 		return self.__cursor.fetchall()
 
+	def selectMax(self, columnHeader):
+		script = "SELECT max(?) from " + self.__tableName
+		self.__cursor.execute(script, (columnHeader,))
+
+		return self.cursor.fetchone()[0]
+
 	def delete(self, id):
 		script = "DELETE FROM " + self.__tableName + " WHERE " + self.__columnHeaders[0] + "=?"
 
 		self.__cursor.execute(script, (str(id), ) )
 
 	def update(self, id, columnHeader, newVal):
-		script = "UPDATE " + self.__tableName + " SET " + columnHeader + "=?" + " WHERE " + self.__columnHeaders[0] + "=" + id
+		script = "UPDATE " + self.__tableName + " SET " + columnHeader + "=?" + " WHERE " + self.__columnHeaders[0] + "=" + str(id)
 
 		self.__cursor.execute(script, (str(newVal), ) )
 
