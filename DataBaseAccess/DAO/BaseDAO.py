@@ -3,7 +3,8 @@ class BaseDAO:
 	# to be overloaded
 	@staticmethod
 	def getDbDir():
-		return "/Users/jeongwonchoi/Desktop/University_of_Waterloo/4YDP/4B/GitHub/3.14Modules/DataBaseAccess/test.db"
+		# return "/Users/jeongwonchoi/Desktop/University_of_Waterloo/4YDP/4B/GitHub/3.14Modules/DataBaseAccess/test.db"
+		return "/Users/jeongwon/Desktop/University_of_Waterloo/4YDP/4B/gitdir/3.14Modules/DataBaseAccess/test.db"
 
 	def __init__(self, connection, tableName, columnHeaders):
 		self.__connector 		= connection
@@ -38,6 +39,7 @@ class BaseDAO:
 		script = "INSERT INTO " + self.__tableName + " " + str(self.__columnHeaders[1:]) + " VALUES " + valuePlaceHolders
 
 		self.__cursor.execute(script, entry)
+		return self.__cursor.lastrowid
 
 	# return an entire row from a table using the primary key - id
 	def selectAnEntry(self, id):

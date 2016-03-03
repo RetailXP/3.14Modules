@@ -1,3 +1,5 @@
+import sys
+
 from Service.AndroidService import AndroidService
 from DAO.BarcodeDAO import BarcodeDAO
 from DAO.InventoryDAO import InventoryDAO
@@ -15,7 +17,7 @@ def testGetFirstPageInfo():
 	connector = dbConnect.getConnection()
 
 	service = AndroidService()
-	print("testGetFirstPageInfo: ")
+	print(sys._getframe().f_code.co_name + ": ")
 	print( service.getFirstPageInfo( ("Barcode1",) ) )
 	print( service.getFirstPageInfo( ("Barcode1", "Barcode3") ) )
 	print("===================================================")
@@ -26,7 +28,7 @@ def testGetSecondPageInfo():
 	connector = dbConnect.getConnection()
 
 	service = AndroidService()
-	print("testGetSecondPageInfo: ")
+	print(sys._getframe().f_code.co_name + ": ")
 	print( service.getSecondPageInfo("Barcode1") )
 	print( service.getSecondPageInfo("Barcode3") )
 	print("===================================================")
@@ -37,11 +39,19 @@ def testReserveInventoryIfAvailable():
 	connector = dbConnect.getConnection()
 
 	service = AndroidService()
-	print("testReserveInventoryIfAvailable: ")
+	print(sys._getframe().f_code.co_name + ": ")
 	print( service.reserveInventoryIfAvailable(1, "Barcode1", 2) )
 	print( service.reserveInventoryIfAvailable(1, "Barcode1", 1000) )
 	print("===================================================")
 	print("Testing reserveInventoryIfAvailable--------complete\n\n\n")
+
+def testProcessRetrievedInventory():
+	dbConnect = DbConnect(InventoryDAO.getDbDir())
+	connector = dbConnect.getConnection()
+
+	service = AndroidService()
+	print(sys._getframe().f_code.co_name + ": ")
+	print( service.processRetrievedInventory(1, 1) )
 
 def main():
 	# testNumItemsAvailable()

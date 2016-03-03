@@ -92,46 +92,27 @@ class AndroidService:
 
 		barcodeDAO = BarcodeDAO(connector)
 
-		footwearSelectionFkColHeader 	= "FootwearSelectionDetailsFk"
-		barcodeColHeader				= "Barcode"
-		usSizeColHeader					= "US_size"
-		eurSizeColHeader				= "EUR_size"
-		ukSizeColHeader					= "UK_size"
-		genderColHeader					= "Gender"
-
-		barcodePriKey 			= barcodeDAO.getPriKeys(barcodeColHeader, barcode)[0]
-		footwearSelectionFk 	= barcodeDAO.selectAColumn(footwearSelectionFkColHeader, barcodePriKey)
-		usSize 					= barcodeDAO.selectAColumn(usSizeColHeader, barcodePriKey)
-		eurSize 				= barcodeDAO.selectAColumn(eurSizeColHeader, barcodePriKey)
-		ukSize 					= barcodeDAO.selectAColumn(ukSizeColHeader, barcodePriKey)
-		gender 					= barcodeDAO.selectAColumn(genderColHeader, barcodePriKey)
+		barcodePriKey 			= barcodeDAO.getPriKeys("Barcode", barcode)[0]
+		footwearSelectionFk 	= barcodeDAO.selectAColumn("FootwearSelectionDetailsFk", barcodePriKey)
+		usSize 					= barcodeDAO.selectAColumn("US_size", barcodePriKey)
+		eurSize 				= barcodeDAO.selectAColumn("EUR_size", barcodePriKey)
+		ukSize 					= barcodeDAO.selectAColumn("UK_size", barcodePriKey)
+		gender 					= barcodeDAO.selectAColumn("Gender", barcodePriKey)
 
 
 		footwearSelectionDAO = FootwearSelectionDAO(connector)
 
-		footwearDesignFkColHeader	= "FootwearDesignDetailsFk"
-		pictureColHeader			= "Picture"
-
-		footwearDesignFk 	= footwearSelectionDAO.selectAColumn(footwearDesignFkColHeader, footwearSelectionFk)
-		picture 			= footwearSelectionDAO.selectAColumn(pictureColHeader, footwearSelectionFk)
+		footwearDesignFk 	= footwearSelectionDAO.selectAColumn("FootwearDesignDetailsFk", footwearSelectionFk)
+		picture 			= footwearSelectionDAO.selectAColumn("Picture", footwearSelectionFk)
 
 
 		footwearDesignDAO = FootwearDesignDAO(connector)
 
-		productNameColHeader 	= "ProductName"
-		brandNameColHeader		= "BrandName"
-		descriptionColHeader	= "Description"
-		costColHeader			= "Cost"
+		productName 	= footwearDesignDAO.selectAColumn("ProductName", footwearDesignFk)
+		brandName 		= footwearDesignDAO.selectAColumn("BrandName", footwearDesignFk)
+		description 	= footwearDesignDAO.selectAColumn("Description", footwearDesignFk)
+		cost 			= footwearDesignDAO.selectAColumn("Cost", footwearDesignFk)
 
-		productName 	= footwearDesignDAO.selectAColumn(productNameColHeader, footwearDesignFk)
-		brandName 		= footwearDesignDAO.selectAColumn(brandNameColHeader, footwearDesignFk)
-		description 	= footwearDesignDAO.selectAColumn(descriptionColHeader, footwearDesignFk)
-		cost 			= footwearDesignDAO.selectAColumn(costColHeader, footwearDesignFk)
-
-
-		inventoryDAO = InventoryDAO(connector)
-
-		inventoryPriKeyColHeader = "InventoryDetailsId"
 
 		numInventory = self.__numItemsAvailable(connector, barcode)
 
@@ -140,7 +121,7 @@ class AndroidService:
 
 	# given the customerId, barcode and quantity, check whether the requested number of
 	# items (specified by barcode) are available in the inventory. If available, place 
-	# order and return (True, [InventoryDetailsId...])
+	# order and return (True, [[InventoryDetailsId, X_index, Y_index, X_encoder, Y_encoder], ...], virtualCartRowId)
 	# Otherwise, return (False, numAvailableItems)
 	def reserveInventoryIfAvailable(self, customerId, barcode, quantity):
 
@@ -156,41 +137,71 @@ class AndroidService:
 
 
 		barcodeDAO = BarcodeDAO(connector)
-		barcodeColHeader = "Barcode"
-		barcodePriKey = barcodeDAO.getPriKeys(barcodeColHeader, barcode)[0]
+		barcodePriKey = barcodeDAO.getPriKeys("Barcode", barcode)[0]
 
 
 		inventoryDAO = InventoryDAO(connector)
-		barcodeDetailsFkColHeader = "BarcodeDetailsFk"
-		inventoryPriKeys = inventoryDAO.getPriKeys(barcodeDetailsFkColHeader, barcodePriKey)
-
-		checkoutFlagColHeader = "CheckoutFlag"
-		reservedInventoryIds = list()
-		for index in range(0, quantity):
-			reservedInventoryId = inventoryPriKeys[index] 
-			inventoryDAO.update(reservedInventoryId, checkoutFlagColHeader, 1)
-			reservedInventoryIds.append(reservedInventoryId)
+		inventoryPriKeys = inventoryDAO.getPriKeys("BarcodeDetailsFk", barcodePriKey)
 
 
 		virtualCartDAO = VirtualCartDAO(connector)
-		virtualCartDAO.createAnEntry( (customerId, barcodePriKey, quantity, 0) )
+		newVirtualCartRowId = virtualCartDAO.createAnEntry( (customerId, barcodePriKey, quantity, 0) )
 
 
-		return (True, reservedInventoryIds)
+		reservedInventoryLoc = list()
+		for index in range(0, quantity):
+			reservedInventoryId = inventoryPriKeys[index]
+			inventoryDAO.update(reservedInventoryId, "CheckoutFlag", 1)
 
-	def getInventoryLocation(self, reservedInventoryId):
+			# [inventoryDetailsId, barcodeDetailsFk, X_index, Y_index, X_encoder, Y_encoder, checkoutFlag]
+			entry = inventoryDAO.selectAnEntry(reservedInventoryId)
+			reservedInventoryLoc.append(entry[0:1]+entry[2:6]) # omit barcodeDetailsFk and checkoutFlag
+
+		return (True, reservedInventoryLoc, newVirtualCartRowId)
+
+	# called when an inventory is retrieved by the robot
+	# update the y_encoder and y_index of the affected rows in the InventoryInfoTable
+	# delete the respective row in the InventoryInfo table
+	# update the respective row in the VirtualCart table
+	def processRetrievedInventory(self, inventoryInfoRowId, virtualCartRowId):
 
 		dbConnect = DbConnect(InventoryDAO.getDbDir())
 		connector = dbConnect.getConnection()
 
+
+		# TODO: after debugging this code is done, there should be a check ensuring that there exists
+		# such ids
+
 		inventoryDAO = InventoryDAO(connector)
+		yIdxColHeader = "Y_index"
 
-		x_indexColHeader = "X_index"
-		x_index = inventoryDAO.selectAColumn(x_indexColHeader, reservedInventoryId)
+		retrievedItemYIndex = inventoryDAO.selectAColumn(yIdxColHeader, inventoryInfoRowId)
 
-		y_indexColHeader = "Y_index"
-		maxY_index = inventoryDAO.selectMax(y_indexColHeader)
+		# if the retrieved box is at the top, no need to do updates on y_encoders and y_index
+		if retrievedItemYIndex != inventoryDAO.selectMax(yIdxColHeader):
+			idBoxAbove = inventoryDAO.getPriKeys(yIdxColHeader, retrievedItemYIndex+1)[0]
+
+			yEncoderColHeader = "Y_encoder"
+			encoderOffset = (inventoryDAO.selectAColumn(yEncoderColHeader, idBoxAbove) - 
+							 inventoryDAO.selectAColumn(yEncoderColHeader, inventoryInfoRowId))
+			
+			# update the y_encoder and y_index values for the boxes above the retrieved box
+			xIdxColHeader = "X_index"
+			retrievedItemXIdx = inventoryDAO.selectAColumn(xIdxColHeader, inventoryInfoRowId)
+			sameStackItemIds = inventoryDAO.getPriKeys(xIdxColHeader, retrievedItemXIdx)
+			for sameStackItemId in sameStackItemIds:
+				curYIdx = inventoryDAO.selectAColumn(yIdxColHeader, sameStackItemId)
+
+				if curYIdx > retrievedItemYIndex:
+					inventoryDAO.update(sameStackItemId, yIdxColHeader, curYIdx-1)
+
+					curYEncoder = inventoryDAO.selectAColumn(yEncoderColHeader, sameStackItemId)
+					inventoryDAO.update(sameStackItemId, yEncoderColHeader, curYEncoder-encoderOffset)
+
+		inventoryDAO.delete(inventoryInfoRowId)
 
 
-		stackOnSameX = inventoryDAO.getPriKeys(x_indexColHeader, x_index)
-		# continue later
+		virtualCartDAO = VirtualCartDAO(connector)
+
+		numItemsForPickup = virtualCartDAO.selectAColumn("NumItemAvailableForPickup", virtualCartRowId)
+		virtualCartDAO.update(virtualCartRowId, "NumItemAvailableForPickup", numItemsForPickup+1)

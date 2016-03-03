@@ -3,7 +3,7 @@ from Service.DbConnect import DbConnect
 from DAO.BaseDAO import BaseDAO
 from Tables.TableStructs import FootwearDesignDetails
 
-gc_database = "/Users/jeongwonchoi/Desktop/University_of_Waterloo/4YDP/4B/GitHub/3.14Modules/DataBaseAccess/test.db"
+
 g_tableName = FootwearDesignDetails.getTableName()
 g_columnHeaders = FootwearDesignDetails.getColumnHeaders()
 
@@ -109,7 +109,7 @@ def testUpdate(baseDAO):
 
 def main():
 
-	dbConnect = DbConnect(gc_database)
+	dbConnect = DbConnect(BaseDAO.getDbDir())
 	connector = dbConnect.getConnection()
 
 	baseDAO = BaseDAO(connector, g_tableName, g_columnHeaders)

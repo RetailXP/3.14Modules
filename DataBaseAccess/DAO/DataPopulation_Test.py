@@ -1,5 +1,6 @@
 from Service.DbConnect import DbConnect
 
+from DAO.BaseDAO import BaseDAO
 from DAO.BarcodeDAO import BarcodeDAO
 from DAO.CustomerDAO import CustomerDAO
 from DAO.FootwearDesignDAO import FootwearDesignDAO
@@ -9,8 +10,7 @@ from DAO.VirtualCartDAO import VirtualCartDAO
 
 from Tables.TableStructs import *
 
-gc_database = "/Users/jeongwonchoi/Desktop/University_of_Waterloo/4YDP/4B/GitHub/3.14Modules/DataBaseAccess/test.db"
-gc_dbConnect = DbConnect(gc_database)
+gc_dbConnect = DbConnect(BaseDAO.getDbDir())
 gc_connector = gc_dbConnect.getConnection()
 
 def populateFootwearDesignDetails():
