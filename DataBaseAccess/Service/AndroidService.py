@@ -205,3 +205,19 @@ class AndroidService:
 
 		numItemsForPickup = virtualCartDAO.selectAColumn("NumItemAvailableForPickup", virtualCartRowId)
 		virtualCartDAO.update(virtualCartRowId, "NumItemAvailableForPickup", numItemsForPickup+1)
+
+
+	# depositing a box back to the inventory
+	def depositInventory(self, barcode, x_index, y_index, x_encoder, y_encoder):
+		
+		dbConnect - DbConnect(InventoryDAO.getDbDir())
+		connector = dbConnect.getConnection()
+
+
+		barcodeDAO = BarcodeDAO(connector)
+		barcodeId = barcodeDAO.selectAColumn("BarcodeId", barcode)
+
+
+		inventoryDAO = InventoryDAO(connector)
+		entry = (barcodeId, x_index, y_index, x_encoder, y_encoder, 0)
+		inventoryDAO.createAnEntry(entry)
