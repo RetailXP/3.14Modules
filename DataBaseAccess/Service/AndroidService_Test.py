@@ -45,13 +45,7 @@ def testReserveInventoryIfAvailable():
 	print("===================================================")
 	print("Testing reserveInventoryIfAvailable--------complete\n\n\n")
 
-def testProcessRetrievedInventory():
-	dbConnect = DbConnect(InventoryDAO.getDbDir())
-	connector = dbConnect.getConnection()
 
-	service = AndroidService()
-	print(sys._getframe().f_code.co_name + ": ")
-	print( service.processRetrievedInventory(1, 1) )
 
 def main():
 	# testNumItemsAvailable()
