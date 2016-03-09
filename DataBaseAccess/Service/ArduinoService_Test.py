@@ -47,10 +47,29 @@ def testGetDepositLocation():
 	print("===================================================")
 	print("Testing testProcessRetrievedInventory-------------------complete\n\n\n")
 
+def testDepositInventory():
+	print(sys._getframe().f_code.co_name + ": ")
+
+	dbConnect = DbConnect(InventoryDAO.getDbDir())
+	connector = dbConnect.getConnection()
+
+	arduinoService = ArduinoService()
+
+	[newXIdx, newYIdx, newXEncoder] = arduinoService.getDepositLocation()
+
+	arduinoService.depositInventory("Barcode5", newXIdx, newYIdx, newXEncoder, newYIdx*20)
+
+	inventoryDAO = InventoryDAO(connector)
+	print(inventoryDAO.selectAllEntries())
+
+	print("===================================================")
+	print("Testing testDepositInventory-------------------complete\n\n\n")
+
 
 def main():
-	# testProcessRetrievedInventory()
+	testProcessRetrievedInventory()
 	testGetDepositLocation()
+	testDepositInventory()
 
 if __name__ == '__main__':
 	main()

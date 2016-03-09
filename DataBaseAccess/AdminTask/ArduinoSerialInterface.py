@@ -38,7 +38,6 @@ class ArduinoSerialInterface:
 
 		# non-blocking i/o
 		if self.__serialConn.in_waiting == 0:
-			# print("in if")
 			return ""
 
 		# sanitizing the reading

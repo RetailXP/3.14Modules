@@ -23,7 +23,6 @@ class ArduinoService:
 		dbConnect = DbConnect(InventoryDAO.getDbDir())
 		connector = dbConnect.getConnection()
 
-
 		# TODO: after debugging this code is done, there should be a check ensuring that there exists
 		# such ids
 
@@ -95,7 +94,7 @@ class ArduinoService:
 
 
 		barcodeDAO = BarcodeDAO(connector)
-		barcodeId = barcodeDAO.selectAColumn("BarcodeId", barcode)
+		barcodeId = barcodeDAO.getPriKeys("Barcode", barcode)[0]
 
 
 		inventoryDAO = InventoryDAO(connector)
