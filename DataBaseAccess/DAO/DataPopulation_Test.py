@@ -1,3 +1,5 @@
+import sys
+
 from Service.DbConnect import DbConnect
 
 from DAO.BaseDAO import BaseDAO
@@ -15,6 +17,8 @@ gc_connector = gc_dbConnect.getConnection()
 
 def populateFootwearDesignDetails():
 
+	print(sys._getframe().f_code.co_name + ": ")
+
 	dao = FootwearDesignDAO(gc_connector)
 
 	productName 	= "Shoe"
@@ -22,7 +26,7 @@ def populateFootwearDesignDetails():
 	description		= "Description"
 	cost			= 1.00
 
-	for i in range(1, 10+1):
+	for i in range(1, 5+1):
 		entry = (productName+str(i), brandName+str(i), description+str(i), cost)
 		dao.createAnEntry(entry)
 
@@ -30,29 +34,34 @@ def populateFootwearDesignDetails():
 
 	print(dao.selectAllEntries())
 
+	print("===================================================")
+	print("Testing populateFootwearDesignDetails-------------------complete\n\n\n")
+
 def populateFootwearSelectionDetails():
+
+	print(sys._getframe().f_code.co_name + ": ")
 
 	dao = FootwearSelectionDAO(gc_connector)
 
 	footwearDesignDetailsFk = 1
 	selection = "Selection"
-	selectionNum = 1
 
-	for i in range(1, 20+1):
+	for i in range(1, 10+1):
 		entry = (footwearDesignDetailsFk,
-				 selection+str(footwearDesignDetailsFk)+"."+str(selectionNum),
+				 selection+str(i),
 				 None)
 		dao.createAnEntry(entry)
 
-		# if index even
-		if i%2 == 0:
-			footwearDesignDetailsFk += 1
-		selectionNum = i%2+1
+		footwearDesignDetailsFk = (i % 5)+1
 
-	# dao.commitDb()
 	print(dao.selectAllEntries())
 
+	print("===================================================")
+	print("Testing populateFootwearSelectionDetails-------------------complete\n\n\n")
+
 def populateBarcodeDetails():
+
+	print(sys._getframe().f_code.co_name + ": ")
 
 	dao = BarcodeDAO(gc_connector)
 
@@ -61,9 +70,9 @@ def populateBarcodeDetails():
 	US_size = 1
 	EUR_size = 2
 	UK_size = 3
-	gender = ("M", "N")
+	gender = ("M", "F")
 
-	for i in range(1, 20+1):
+	for i in range(1, 5+1):
 		entry = (barcode+str(i),
 				 footwearSelectionDetailsFk,
 				 US_size,
@@ -77,23 +86,43 @@ def populateBarcodeDetails():
 		EUR_size += 3
 		UK_size += 3
 
-	# dao.commitDb()
 	print(dao.selectAllEntries())
+
+	print("===================================================")
+	print("Testing populateBarcodeDetails-------------------complete\n\n\n")
 
 def populateInventoryInfo():
 
+	print(sys._getframe().f_code.co_name + ": ")
+
 	dao = InventoryDAO(gc_connector)
 
-	for i in range(0, 20+1):
-		value = i%20+1
-		entry = (value, value, value, value*10, value*10, 0)
+	entries = [
+				(1, 0, 0, 50, 0, 0),
+				(2, 0, 1, 50, 20, 0),
+				(3, 0, 2, 50, 40, 0),
+				(4, 0, 3, 50, 60, 0),
+				(5, 1, 0, 100, 0, 0),
+				(1, 1, 1, 100, 20, 0),
+				(2, 2, 0, 150, 0, 0),
+				(3, 2, 1, 150, 20, 0),
+				(4, 2, 2, 150, 40, 0),
+				(5, 2, 3, 150, 60, 0),
+				(1, 2, 4, 150, 80, 0),
+				(2, 2, 5, 150, 100, 0)
+			  ]
 
+	for entry in entries:
 		dao.createAnEntry(entry)
 
-	# dao.commitDb()
 	print(dao.selectAllEntries())
 
+	print("===================================================")
+	print("Testing populateInventoryInfo-------------------complete\n\n\n")
+
 def populateCustomerInfo():
+
+	print(sys._getframe().f_code.co_name + ": ")
 
 	dao = CustomerDAO(gc_connector)
 
@@ -108,22 +137,28 @@ def populateCustomerInfo():
 					  "Victory Mansions, London, England, Great Britain",
 					  "1984-1984-1984"))
 
-	# dao.commitDb()
 	print(dao.selectAllEntries())
+
+	print("===================================================")
+	print("Testing populateCustomerInfo-------------------complete\n\n\n")
 
 def populateVirtualCart():
 
+	print(sys._getframe().f_code.co_name + ": ")
+
 	dao = VirtualCartDAO(gc_connector)
 
-	dao.createAnEntry( (1, 1, 1, 0) )
-	dao.createAnEntry( (1, 2, 2, 0) )
-	dao.createAnEntry( (1, 3, 1, 0) )
-	dao.createAnEntry( (2, 1, 1, 0) )
-	dao.createAnEntry( (2, 2, 1, 0) )
-	dao.createAnEntry( (2, 3, 1, 0) )
+	# dao.createAnEntry( (1, 1, 1, 0) )
+	# dao.createAnEntry( (1, 2, 2, 0) )
+	# dao.createAnEntry( (1, 3, 1, 0) )
+	# dao.createAnEntry( (2, 1, 1, 0) )
+	# dao.createAnEntry( (2, 2, 1, 0) )
+	# dao.createAnEntry( (2, 3, 1, 0) )
 
-	# dao.commitDb()
 	print(dao.selectAllEntries())
+
+	print("===================================================")
+	print("Testing populateVirtualCart-------------------complete\n\n\n")
 
 def main():
 	populateFootwearDesignDetails()
@@ -132,8 +167,6 @@ def main():
 	populateInventoryInfo()
 	populateCustomerInfo()
 	populateVirtualCart()
-
-	# gc_connector.commit()
 
 
 if __name__ == "__main__":

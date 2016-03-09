@@ -68,7 +68,7 @@ class BaseDAO:
 		script = "SELECT max(?) from " + self.__tableName
 		self.__cursor.execute(script, (columnHeader,))
 
-		return self.cursor.fetchone()[0]
+		return self.__cursor.fetchone()[0]
 
 	def delete(self, id):
 		script = "DELETE FROM " + self.__tableName + " WHERE " + self.__columnHeaders[0] + "=?"

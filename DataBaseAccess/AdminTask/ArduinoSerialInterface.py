@@ -49,10 +49,10 @@ class ArduinoSerialInterface:
 		return msg
 
 def main():
-	adminTask = ArduinoSerialInterface()
-	adminTask.serialWrite("Message from PI!!!")
-	# line = adminTask.serialRead();
-	# print( str(line.decode("utf-8")) )
+	adminTask = ArduinoSerialInterface(serialPort="/dev/tty.usbmodemfa131")
+	# adminTask.serialWrite("Message from PI!!!")
+	line = adminTask.serialRead();
+	print( str(line.decode("utf-8")) )
 
 
 if __name__ == "__main__":

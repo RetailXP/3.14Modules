@@ -43,7 +43,7 @@ def testSelectAnEntry(baseDAO):
 
 	print("Testing selectAnEntry: ")
 
-	entry = baseDAO.selectAnEntry("1")
+	entry = baseDAO.selectAnEntry(1)
 	print(entry)
 
 	print("===================================================")
@@ -86,8 +86,10 @@ def testDelete(baseDAO):
 
 	print("Testing delete")
 
-	baseDAO.delete("1")
+	baseDAO.delete("5")
 	print(baseDAO.selectAllEntries())
+
+	baseDAO.createAnEntry( ("Shoe5", "Brand5", "Description5", 5) )
 
 	print("===================================================")
 	print("Testing delete-----------------------------complete\n\n\n")
@@ -98,13 +100,16 @@ def testUpdate(baseDAO):
 	print("Testing Update")
 
 	# testing "update" method
-	baseDAO.update("3",
-				   FootwearDesignDetails.getColumnHeaders()[0],
-				   "1")
+	baseDAO.update(5,
+				   "Cost",
+				   1)
 	print(baseDAO.selectAllEntries())
+	baseDAO.update(5,
+			   	   "Cost",
+			   	   5)
 
 	print("===================================================")
-	print("Testing delete-----------------------------complete\n\n\n")
+	print("Testing update-----------------------------complete\n\n\n")
 
 
 def main():
@@ -114,7 +119,7 @@ def main():
 
 	baseDAO = BaseDAO(connector, g_tableName, g_columnHeaders)
 
-	testCreateAnEntry(baseDAO)
+	# testCreateAnEntry(baseDAO)
 	testGetPriKeys(baseDAO)
 	testSelectAnEntry(baseDAO)
 	testSelectAllEntries(baseDAO)

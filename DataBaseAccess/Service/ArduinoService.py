@@ -11,6 +11,9 @@ from Tables.TableStructs import *
 
 class ArduinoService:
 
+	# TODO: THIS SHOULD BE MODIFIED
+	sc_xEncodingValues = (50, 100, 150)
+
 	# called when an inventory is retrieved by the robot
 	# update the y_encoder and y_index of the affected rows in the InventoryInfoTable
 	# delete the respective row in the InventoryInfo table
@@ -58,11 +61,36 @@ class ArduinoService:
 		numItemsForPickup = virtualCartDAO.selectAColumn("NumItemAvailableForPickup", virtualCartRowId)
 		virtualCartDAO.update(virtualCartRowId, "NumItemAvailableForPickup", numItemsForPickup+1)
 
+	# determine deposit location
+	# [x_index, y_index, x_encoder]
+	def getDepositLocation(self):
+
+		dbConnect = DbConnect(InventoryDAO.getDbDir())
+		connector = dbConnect.getConnection()
+
+
+		inventoryDAO = InventoryDAO(connector)
+		c_maxXIndex = 3-1
+		c_maxYIndex = 6-1
+
+		oneStackPriKeys = list()
+		x_idx = 0
+		for x_idx in range(0, c_maxXIndex):
+			oneStackPriKeys = inventoryDAO.getPriKeys("X_index", x_idx)
+			if(len(oneStackPriKeys) <= c_maxYIndex):
+				break
+
+		newXIdx = x_idx
+		newYIdx = len(oneStackPriKeys)
+		x_encoder = ArduinoService.sc_xEncodingValues[newXIdx]
+
+		return [newXIdx, newYIdx, x_encoder]
+
 
 	# depositing a box back to the inventory
 	def depositInventory(self, barcode, x_index, y_index, x_encoder, y_encoder):
 		
-		dbConnect - DbConnect(InventoryDAO.getDbDir())
+		dbConnect = DbConnect(InventoryDAO.getDbDir())
 		connector = dbConnect.getConnection()
 
 
