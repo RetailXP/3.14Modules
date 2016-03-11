@@ -14,6 +14,28 @@ class ArduinoService:
 	# TODO: THIS SHOULD BE MODIFIED
 	sc_xEncodingValues = (50, 100, 150)
 
+	def getLocationBoxAbove(self, inventoryDetailsId):
+
+		dbConnect = DbConnect(InventoryDAO.getDbDir())
+		connector = dbConnect.getConnection()
+
+		inventoryDAO = InventoryDAO(connector)
+		reservedInv = inventoryDAO.selectAnEntry(inventoryDetailsId)
+
+		itemsOnStack = inventoryDAO.selectEntries("X_index", reservedInv[2])
+
+		x_encoder = reservedInv[4]
+		y_encoder = 0
+
+		#if no box at the top, set to 0
+		if len(itemsOnStack)-1 != reservedInv[3]:
+			for item in itemsOnStack:
+				if item[3] == reservedInv[3]+1:
+					y_encoder = item[5]
+					break
+
+		return [x_encoder, y_encoder] 
+
 	# called when an inventory is retrieved by the robot
 	# update the y_encoder and y_index of the affected rows in the InventoryInfoTable
 	# delete the respective row in the InventoryInfo table
@@ -69,21 +91,32 @@ class ArduinoService:
 
 
 		inventoryDAO = InventoryDAO(connector)
-		c_maxXIndex = 3-1
-		c_maxYIndex = 6-1
+		c_maxXIndex = InventoryInfo.sc_maxXIndex
+		c_maxYIndex = InventoryInfo.sc_maxYIndex
 
-		oneStackPriKeys = list()
+		oneStackEntries = list()
 		x_idx = 0
 		for x_idx in range(0, c_maxXIndex):
-			oneStackPriKeys = inventoryDAO.getPriKeys("X_index", x_idx)
-			if(len(oneStackPriKeys) <= c_maxYIndex):
+			oneStackEntries = inventoryDAO.selectEntries("X_index", x_idx)
+			if(len(oneStackEntries) <= c_maxYIndex):
 				break
 
 		newXIdx = x_idx
-		newYIdx = len(oneStackPriKeys)
+		newYIdx = len(oneStackEntries)
 		x_encoder = ArduinoService.sc_xEncodingValues[newXIdx]
+		y_encoder = 0
 
-		return [newXIdx, newYIdx, x_encoder]
+		# !TODO: CHANGE THIS
+		maxBoxSize = InventoryInfo.sc_maxBoxSize
+
+		maxY_encoder = 0
+		if newYIdx > 0:
+			for item in oneStackEntries:
+				if maxY_encoder < item[5]:
+					maxY_encoder = item[5]
+			y_encoder = maxY_encoder + maxBoxSize
+
+		return [newXIdx, newYIdx, x_encoder, y_encoder]
 
 
 	# depositing a box back to the inventory

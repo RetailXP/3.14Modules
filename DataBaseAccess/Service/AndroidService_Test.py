@@ -18,8 +18,8 @@ def testGetFirstPageInfo():
 
 	service = AndroidService()
 	print(sys._getframe().f_code.co_name + ": ")
-	print( service.getFirstPageInfo( ("Barcode1",) ) )
-	print( service.getFirstPageInfo( ("Barcode1", "Barcode3") ) )
+	print( service.getFirstPageInfo( (1,) ) )
+	print( service.getFirstPageInfo( (1, 3) ) )
 	print("===================================================")
 	print("Testing getFirstPageInfo-------------------complete\n\n\n")
 
@@ -29,8 +29,8 @@ def testGetSecondPageInfo():
 
 	service = AndroidService()
 	print(sys._getframe().f_code.co_name + ": ")
-	print( service.getSecondPageInfo("Barcode1") )
-	print( service.getSecondPageInfo("Barcode3") )
+	print( service.getSecondPageInfo(1) )
+	print( service.getSecondPageInfo(3) )
 	print("===================================================")
 	print("Testing getSecondPageInfo------------------complete\n\n\n")
 
@@ -40,8 +40,8 @@ def testReserveInventoryIfAvailable():
 
 	service = AndroidService()
 	print(sys._getframe().f_code.co_name + ": ")
-	print( service.reserveInventoryIfAvailable(1, "Barcode1", 2) )
-	print( service.reserveInventoryIfAvailable(1, "Barcode1", 1000) )
+	print( service.reserveInventoryIfAvailable(1, 1, 2) )
+	print( service.reserveInventoryIfAvailable(1, 1, 1000) )
 	print("===================================================")
 	print("Testing reserveInventoryIfAvailable--------complete\n\n\n")
 

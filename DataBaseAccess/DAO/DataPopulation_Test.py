@@ -65,7 +65,6 @@ def populateBarcodeDetails():
 
 	dao = BarcodeDAO(gc_connector)
 
-	barcode = "Barcode"
 	footwearSelectionDetailsFk = 1
 	US_size = 1
 	EUR_size = 2
@@ -73,7 +72,7 @@ def populateBarcodeDetails():
 	gender = ("M", "F")
 
 	for i in range(1, 5+1):
-		entry = (barcode+str(i),
+		entry = (i,
 				 footwearSelectionDetailsFk,
 				 US_size,
 				 EUR_size,

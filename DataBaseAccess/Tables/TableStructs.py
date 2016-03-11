@@ -59,6 +59,10 @@ class BarcodeDetails(BaseTableStruct):
 
 class InventoryInfo(BaseTableStruct):
 
+	sc_maxBoxSize = 200
+	sc_maxXIndex = 3-1
+	sc_maxYIndex = 6-1
+
 	def __init__(self):
 
 		BaseTableStruct.__init__(self)

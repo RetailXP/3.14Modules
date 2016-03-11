@@ -7,6 +7,20 @@ from DAO.InventoryDAO import InventoryDAO
 from DAO.VirtualCartDAO import VirtualCartDAO
 from .DbConnect import DbConnect
 
+def testGetLocationBoxAbove():
+	print(sys._getframe().f_code.co_name + ": ")
+
+	dbConnect = DbConnect(InventoryDAO.getDbDir())
+	connector = dbConnect.getConnection()
+
+	arduinoService = ArduinoService()
+
+	print(arduinoService.getLocationBoxAbove(1))
+
+	print("===================================================")
+	print("Testing testGetLocationBoxAbove-------------------complete\n\n\n")
+
+
 def testProcessRetrievedInventory():
 	print(sys._getframe().f_code.co_name + ": ")
 
@@ -14,7 +28,7 @@ def testProcessRetrievedInventory():
 	connector = dbConnect.getConnection()
 
 	customerId = 1
-	barcode = "Barcode1"
+	barcode = 1
 	quantity = 2
 
 	androidService = AndroidService()
@@ -55,9 +69,10 @@ def testDepositInventory():
 
 	arduinoService = ArduinoService()
 
-	[newXIdx, newYIdx, newXEncoder] = arduinoService.getDepositLocation()
+	[newXIdx, newYIdx, newXEncoder, newYEncoder] = arduinoService.getDepositLocation()
+	print([newXIdx, newYIdx, newXEncoder, newYEncoder])
 
-	arduinoService.depositInventory("Barcode5", newXIdx, newYIdx, newXEncoder, newYIdx*20)
+	arduinoService.depositInventory(5, newXIdx, newYIdx, newXEncoder, newYEncoder)
 
 	inventoryDAO = InventoryDAO(connector)
 	print(inventoryDAO.selectAllEntries())
@@ -67,6 +82,7 @@ def testDepositInventory():
 
 
 def main():
+	testGetLocationBoxAbove()
 	testProcessRetrievedInventory()
 	testGetDepositLocation()
 	testDepositInventory()

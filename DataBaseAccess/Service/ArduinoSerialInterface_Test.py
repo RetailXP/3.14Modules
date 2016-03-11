@@ -9,7 +9,7 @@ def testRetrieval():
 
 	tabletService = AndroidService()
 	# invLoc = [inventoryDetailsId, X_index, Y_index, X_encoder, Y_encoder]
-	[isAvailable, invLoc, vCartRowID] = tabletService.reserveInventoryIfAvailable(self, 1, "Barcode1", 1)
+	[isAvailable, invLoc, vCartRowID] = tabletService.reserveInventoryIfAvailable(self, 1, 1, 1)
 
 
 	arduinoComm = ArduinoSerialInterface()

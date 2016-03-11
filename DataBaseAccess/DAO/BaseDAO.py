@@ -3,8 +3,8 @@ class BaseDAO:
 	# to be overloaded
 	@staticmethod
 	def getDbDir():
-		return "/Users/jeongwonchoi/Desktop/University_of_Waterloo/4YDP/4B/GitHub/3.14Modules/DataBaseAccess/test.db"
-		# return "/Users/jeongwon/Desktop/University_of_Waterloo/4YDP/4B/gitdir/3.14Modules/DataBaseAccess/test.db"
+		# return "/Users/jeongwonchoi/Desktop/University_of_Waterloo/4YDP/4B/GitHub/3.14Modules/DataBaseAccess/test.db"
+		return "/Users/jeongwon/Desktop/University_of_Waterloo/4YDP/4B/gitdir/3.14Modules/DataBaseAccess/test.db"
 
 	def __init__(self, connection, tableName, columnHeaders):
 		self.__connector 		= connection
@@ -56,6 +56,13 @@ class BaseDAO:
 		self.__cursor.execute(script, (str(id), ) )
 
 		return self.__cursor.fetchone()[0]
+
+	# given a column value, return all rows
+	def selectEntries(self, colHeader, val):
+		script = "SELECT * FROM " + self.__tableName + " WHERE " + colHeader + "=?"
+		self.__cursor.execute(script, (str(val), ) )
+
+		return self.__cursor.fetchall()
 
 	# return the whole table
 	def selectAllEntries(self):
