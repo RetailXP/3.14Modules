@@ -1,3 +1,5 @@
+from BaseMessage import BaseMessage
+
 class MessageFormat:
 
 	start 	= 0x80
@@ -27,10 +29,24 @@ class MessageFormat:
 	movPosP2A 		= 4
 	movPosA2P 		= 1
 
-class RetInvP2A:
+class RetInvP2A(BaseMessage):
 
 	# assume correct length for messageContent length
-	def __init__(self, messageContent):
+	# the member attributes are public, thus is exposed for interfacing
+	def __init__(self):
+		self.invInfoRowId	= 0
+		self.virtCartId		= 0
+		self.x_idx			= 0
+		self.y_idx			= 0
+
+		self.x_enc 			= 0
+		self.y_enc 			= 0
+
+		self.x_encAbove 	= 0
+		self.y_encAbove		= 0
+
+	# messageContent is what is returned by the message parser
+	def decode(self, messageContent):
 		self.invInfoRowId = messageContent[0]
 		self.virtCartId = messageContent[1]
 		self.x_idx = messageContent[2]
@@ -42,37 +58,201 @@ class RetInvP2A:
 		self.x_encAbove = messageContent[8] | messageContent[9] << 8
 		self.y_encAbove = messageContent[10] | messageContent[11] << 8
 
-class RetInvA2P:
+		if self.x_idx not in range(0, 3) or self.y_idx not in range(0, 6):
+			raise CorruptData("x_enc and y_enc out of bound: (" + str(self.x_enc) + ", " + str(self.y_enc) + ")" )
 
-	def __init__(self, messageContent):
+		if self.x_encAbove not in range(0, 3) or self.y_encAbove not in range(0, 6):
+			raise CorruptData("x_encAbove and y_encAbove out of bound: (" + str(self.x_encAbove) + ", " + str(self.y_encAbove) + ")" )
+
+	def encode(self):
+		bitMask = 0xFF
+
+		msg = list()
+		msg.append(MessageFormat.start)
+		msg.append(MessageFormat.retInvP2A+1)
+		msg.append(MessageFormat.retInv)
+
+		msg += RetInvP2A.escapeByte(self.invInfoRowId,  bitMask )
+		msg += RetInvP2A.escapeByte(self.virtCartId, bitMask )
+
+		msg += RetInvP2A.escapeByte(self.x_idx, bitMask )
+		msg += RetInvP2A.escapeByte(self.y_idx, bitMask )
+
+		msg += RetInvP2A.escapeByte(self.x_enc, bitMask )
+		msg += RetInvP2A.escapeByte(self.x_enc, bitMask << 8 )
+		msg += RetInvP2A.escapeByte(self.y_enc, bitMask )
+		msg += RetInvP2A.escapeByte(self.y_enc, bitMask << 8 )
+
+		msg += RetInvP2A.escapeByte(self.x_encAbove, bitMask )
+		msg += RetInvP2A.escapeByte(self.x_encAbove, bitMask << 8 )
+		msg += RetInvP2A.escapeByte(self.y_encAbove, bitMask )
+		msg += RetInvP2A.escapeByte(self.y_encAbove, bitMask << 8 )
+
+		return msg
+
+
+class RetInvA2P(BaseMessage):
+
+	def __init__(self):
+		self.invInfoRowId = 0
+		self.virtCartId = 0
+
+	def decode(self, messageContent):
 		self.invInfoRowId = messageContent[0]
 		self.virtCartId = messageContent[1]
 
-class DepoInvP2A:
+	def encode(self):
+		bitMask = 0xFF
 
-	def __init__(self, messageContent):
+		msg = list()
+		msg.append(MessageFormat.start)
+		msg.append(MessageFormat.retInvA2P+1)
+		msg.append(MessageFormat.retInv)
+
+		msg += RetInvA2P.escapeByte(self.invInfoRowId, bitMask)
+		msg += RetInvA2P.escapeByte(self.virtCartId, bitMask)
+
+		return msg
+
+class DepoInvP2A(BaseMessage):
+
+	def __init__(self):
+		self.barcode = 0
+		self.x_enc = 0
+		self.y_enc = 0
+
+	def decode(self, messageContent):
 		self.barcode = messageContent[0]
 		self.x_enc = messageContent[1] | messageContent[2] << 8
 		self.y_enc = messageContent[3] | messageContent[4] << 8
 
-class DepoInvA2P:
+	def encode(self):
+		bitMask = 0xFF
 
-	def __init__(self, messageContent):
+		msg = list()
+		msg.append(MessageFormat.start)
+		msg.append(MessageFormat.depoInvP2A+1)
+		msg.append(MessageFormat.depInv)
+
+		msg += DepoInvP2A.escapeByte(self.barcode, bitMask)
+		msg += DepoInvP2A.escapeByte(self.x_enc, bitMask)
+		msg += DepoInvP2A.escapeByte(self.x_enc, bitMask << 8)
+		msg += DepoInvP2A.escapeByte(self.y_enc, bitMask)
+		msg += DepoInvP2A.escapeByte(self.y_enc, bitMask << 8)
+
+		return msg
+
+class DepoInvA2P(BaseMessage):
+
+	def __init__(self):
+		self.barcode = 0
+		self.y_enc = 0
+
+	def decode(self, messageContent):
 		self.barcode = messageContent[0]
 		self.y_enc = messageContent[1] | messageContent[2] << 8
 
-class MovPosP2A:
+	def encode(self):
+		bitMask = 0xFF
 
-	def __init__(self, messageContent):
+		msg = list()
+		msg.append(MessageFormat.start)
+		msg.append(MessageFormat.depoInvA2P+1)
+		msg.append(MessageFormat.depInv)
+
+		msg += DepoInvA2P.escapeByte(self.barcode, bitMask)
+		msg += DepoInvA2P.escapeByte(self.y_enc, bitMask)
+		msg += DepoInvA2P.escapeByte(self.y_enc, bitMask << 8)
+
+		return msg
+
+class HomeRobotP2A(BaseMessage):
+
+	def decode(self, messageContent):
+		pass
+
+	def encode(self):
+		binMask = 0xFF
+
+		msg = list()
+		msg.append(MessageFormat.start)
+		msg.append(MessageFormat.homeRobotP2A+1)
+		msg.append(MessageFormat.homeRobot)
+
+		return msg
+
+
+class HomeRobotA2P(BaseMessage):
+
+	def decode(self, messageContent):
+		pass
+
+	def encode(self):
+		bitMask = 0xFF
+
+		msg = list()
+		msg.append(MessageFormat.start)
+		msg.append(MessageFormat.homeRobotA2P+1)
+		msg.append(MessageFormat.homeRobot)
+
+		return msg
+
+
+class MovPosP2A(BaseMessage):
+
+	def __init__(self):
+		self.x_enc = 0
+		self.y_enc = 0
+
+	def decode(self, messageContent):
 		self.x_enc = messageContent[0] | messageContent[1] << 8
 		self.y_enc = messageContent[2] | messageContent[3] << 8
 
-class MovPosA2P:
+	def encode(self):
+		bitMask = 0xFF
+
+		msg = list()
+		msg.append(MessageFormat.start)
+		msg.append(MessageFormat.movPosP2A+1)
+		msg.append(MessageFormat.movRobot)
+
+		msg += MovPosP2A.escapeByte(self.x_enc, bitMask)
+		msg += MovPosP2A.escapeByte(self.x_enc, bitMask << 8)
+		msg += MovPosP2A.escapeByte(self.y_enc, bitMask)
+		msg += MovPosP2A.escapeByte(self.y_enc, bitMask << 8)
+
+		return msg
+
+class MovPosA2P(BaseMessage):
 	
 	cs_dimOOB  	= 0
 	cs_movSucc 	= 1
 	cs_limitSwi = 2
 
 	def __init__(self, messageContent):
+		self.movMode = -1
+
+	def decode(self, messageContent):
 		self.movMode = messageContent[0]
 
+		if self.movMode not in range(0, 3):
+			raise CorruptData("movMode out of bound: " + str(self.movMode))
+
+	def encode(self):
+		bitMask = 0xFF
+
+		msg = list()
+		msg.append(MessageFormat.start)
+		msg.append(MessageFormat.movPosA2P+1)
+		msg.append(MessageFormat.movRobot)
+
+		msg += MovPosA2P.escapeByte(self.movMod, bitMask)
+
+		return msg
+
+class CorruptData(BaseException):
+	def __init__(self, value):
+		self.value = value
+
+	def __str__(self):
+		return repr("CorruptData ERROR: " + self.value)

@@ -28,7 +28,7 @@ class MessageParser:
 		yield
 
 		# data length
-		dataLen = self.msgByte
+		dataLen = self.msgByte - 1			# to subtract the msgType byte
 		self.retVal = [False, dataLen]
 		yield
 
