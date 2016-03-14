@@ -18,8 +18,7 @@ def testGetFirstPageInfo():
 
 	service = AndroidService()
 	print(sys._getframe().f_code.co_name + ": ")
-	print( service.getFirstPageInfo( (1,) ) )
-	print( service.getFirstPageInfo( (1, 3) ) )
+	print( service.getFirstPageInfo() )
 	print("===================================================")
 	print("Testing getFirstPageInfo-------------------complete\n\n\n")
 
@@ -29,8 +28,8 @@ def testGetSecondPageInfo():
 
 	service = AndroidService()
 	print(sys._getframe().f_code.co_name + ": ")
-	print( service.getSecondPageInfo(1) )
-	print( service.getSecondPageInfo(3) )
+	print( service.getSecondPageInfo("Selection1") )
+	print( service.getSecondPageInfo("Selection2") )
 	print("===================================================")
 	print("Testing getSecondPageInfo------------------complete\n\n\n")
 

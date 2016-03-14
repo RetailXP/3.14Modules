@@ -1,4 +1,4 @@
-from MessageStruct import *
+from AdminTask.MessageFormat import MessageFormat
 
 class BaseMessage():
 
@@ -10,7 +10,7 @@ class BaseMessage():
 
 	# it is assumed that the length of the mask is divisible by a byte
 	@staticmethod
-	def escapeByte(self, data, mask):
+	def escapeByte(data, mask):
 
 		dataByte = data & mask
 

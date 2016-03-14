@@ -72,10 +72,22 @@ class BaseDAO:
 		return self.__cursor.fetchall()
 
 	def selectMax(self, columnHeader):
-		script = "SELECT max(?) from " + self.__tableName
-		self.__cursor.execute(script, (columnHeader,))
+		script = 'SELECT max(' + str(columnHeader) + ') FROM ' + self.__tableName
+		self.__cursor.execute(script)
 
 		return self.__cursor.fetchone()[0]
+
+	def selectDistinct(self, columnHeader):
+		script = "SELECT DISTINCT " + str(columnHeader) + " FROM " + self.__tableName
+
+		self.__cursor.execute(script)
+		distincts = self.__cursor.fetchall()
+
+		retVal = list()
+		for distinct in distincts:
+			retVal.append(distinct[0])
+
+		return retVal
 
 	def delete(self, id):
 		script = "DELETE FROM " + self.__tableName + " WHERE " + self.__columnHeaders[0] + "=?"

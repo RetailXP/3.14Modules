@@ -76,10 +76,21 @@ def testSelectMax(baseDAO):
 
 	print("Testing selectMax")
 
-	print( baseDAO.selectMax("Cost") )
+	result = baseDAO.selectMax("Cost")
+
+	print( result )
 
 	print("===================================================")
 	print("Testing testSelectMax---------------------complete\n\n\n")	
+
+def testSelectDistinct(baseDAO):
+
+	print("Testing selectDistinct")
+
+	print( baseDAO.selectDistinct("Description") )
+
+	print("===================================================")
+	print("Testing testSelectMax---------------------complete\n\n\n")
 
 
 def testDelete(baseDAO):
@@ -124,6 +135,8 @@ def main():
 	testSelectAnEntry(baseDAO)
 	testSelectAllEntries(baseDAO)
 	testSelectAColumn(baseDAO)
+	testSelectMax(baseDAO)
+	testSelectDistinct(baseDAO)
 	testDelete(baseDAO)
 	testUpdate(baseDAO)
 

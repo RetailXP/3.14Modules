@@ -1,33 +1,5 @@
-from BaseMessage import BaseMessage
-
-class MessageFormat:
-
-	start 	= 0x80
-	escape 	= 0x81
-
-	## header byte (2 bytes)
-
-	# header byte 1 (length of data)
-	# header byte 2 (messge type)
-	retInv		= 0x1
-	depInv 		= 0x2
-	homeRobot 	= 0x3
-	movRobot	= 0x4
-
-
-	## message content size (bytes)
-
-	retInvP2A 		= 12
-	retInvA2P		= 2
-
-	depoInvP2A		= 5
-	depoInvA2P		= 7
-
-	homeRobotP2A	= 0
-	homeRobotA2P 	= 0
-
-	movPosP2A 		= 4
-	movPosA2P 		= 1
+from AdminTask.BaseMessage import BaseMessage
+from AdminTask.MessageFormat import MessageFormat
 
 class RetInvP2A(BaseMessage):
 
@@ -59,10 +31,7 @@ class RetInvP2A(BaseMessage):
 		self.y_encAbove = messageContent[10] | messageContent[11] << 8
 
 		if self.x_idx not in range(0, 3) or self.y_idx not in range(0, 6):
-			raise CorruptData("x_enc and y_enc out of bound: (" + str(self.x_enc) + ", " + str(self.y_enc) + ")" )
-
-		if self.x_encAbove not in range(0, 3) or self.y_encAbove not in range(0, 6):
-			raise CorruptData("x_encAbove and y_encAbove out of bound: (" + str(self.x_encAbove) + ", " + str(self.y_encAbove) + ")" )
+			raise CorruptData("x_idx and y_idx out of bound: (" + str(self.x_idx) + ", " + str(self.y_idx) + ")" )
 
 	def encode(self):
 		bitMask = 0xFF
@@ -229,7 +198,7 @@ class MovPosA2P(BaseMessage):
 	cs_movSucc 	= 1
 	cs_limitSwi = 2
 
-	def __init__(self, messageContent):
+	def __init__(self):
 		self.movMode = -1
 
 	def decode(self, messageContent):
@@ -246,7 +215,7 @@ class MovPosA2P(BaseMessage):
 		msg.append(MessageFormat.movPosA2P+1)
 		msg.append(MessageFormat.movRobot)
 
-		msg += MovPosA2P.escapeByte(self.movMod, bitMask)
+		msg += MovPosA2P.escapeByte(self.movMode, bitMask)
 
 		return msg
 

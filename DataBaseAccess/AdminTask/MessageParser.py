@@ -1,4 +1,4 @@
-from MessageStruct import *
+from AdminTask.MessageStruct import *
 
 class MessageParser:
 
@@ -15,6 +15,8 @@ class MessageParser:
 		return self.retVal
 
 	def getRetVal(self):
+
+		self.getFunc = self.internalParsing()
 		return self.retVal
 
 	
@@ -37,6 +39,9 @@ class MessageParser:
 		self.retVal = [False, msgType]
 		if msgType > 0x4:
 			raise CorruptMsg("msgType: " + str(msgType))
+
+		if dataLen == 0:
+			self.retVal = [True, msgType, []]
 		yield
 
 		# msg content
@@ -70,7 +75,7 @@ class MessageParser:
 					yield
 
 		self.retVal = [True, msgType, msgContent]
-		yield
+		yield self.retVal
 
 class CorruptMsg(BaseException):
 	def __init__(self, value):

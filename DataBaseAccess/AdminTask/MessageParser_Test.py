@@ -1,11 +1,11 @@
-from MessageParser import *
+from AdminTask.MessageParser import *
 
 def testCorrectMsgWithoutEscape():
 	c_msg = (0x80, 0x4+1, 0x4, 0x0, 0x1, 0x2, 0x3)
 
 	parser = MessageParser()
 	for msgByte in c_msg:
-		parser.parseMsg(msgByte)
+		print(parser.parseMsg(msgByte) )
 
 	print(parser.retVal)
 
@@ -85,6 +85,25 @@ def testMisuedEscape():
 	print("===================================================")
 	print("Testing misuedEscape----------------------complete\n\n\n")
 
+def testReusingCoroutine():
+	c_msg = (0x80, 0x4+1, 0x4, 0x0, 0x1, 0x2, 0x3)
+
+	parser = MessageParser()
+
+	for msgByte in c_msg:
+		parser.parseMsg(msgByte)
+	print(parser.getRetVal())
+
+	c_msg2 = (0x80, 0x4+1, 0x4, 0x0, 0x1, 0x2, 0x3)
+	parser = MessageParser()
+	for msgByte in c_msg:
+		parser.parseMsg(msgByte)
+	print(parser.getRetVal())
+
+	print("===================================================")
+	print("Testing reusingCoroutine----------------------complete\n\n\n")
+
+
 def main():
 
 	testCorrectMsgWithoutEscape()
@@ -94,6 +113,8 @@ def main():
 	testFaultyMsgType()
 	testStartByteWithoutEscape()
 	testMisuedEscape()
+
+	testReusingCoroutine()
 
 if __name__ == "__main__":
 	main()

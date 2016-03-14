@@ -34,89 +34,58 @@ class AndroidService:
 
 		return numItems
 
-	# given a barcode list for items to display on the first page of the app,
-	# return product names, cost and picture for the items in the received order
-	def getFirstPageInfo(self, barcodes):
+	# retrieve information for the first page
+	# a list of (selection, product name, brand name, description, cost)
+	def getFirstPageInfo(self):
 
-		dbConnect = DbConnect(BarcodeDAO.getDbDir())
+		dbConnect = DbConnect(FootwearSelectionDAO.getDbDir())
 		connector = dbConnect.getConnection()
-
-		barcodeDAO = BarcodeDAO(connector)
-
-		barcodePriKeys 			= list()
-		footwearSelectionFks 	= list()
-		barcodeColHeader 				= "Barcode"
-		footwearSelectionFkColHeader 	= "FootwearSelectionDetailsFk"
-		for barcode in barcodes:
-			barcodePriKey = barcodeDAO.getPriKeys( barcodeColHeader, barcode )
-			barcodePriKeys.append(barcodePriKey[0])
-			footwearSelectionFks.append( barcodeDAO.selectAColumn(footwearSelectionFkColHeader, barcodePriKey[0]) )
-
 
 		footwearSelectionDAO = FootwearSelectionDAO(connector)
 
-		footwearDesignFks 	= list()
-		pictures 			= list()
-		footwearDesignFkColHeader	= "FootwearDesignDetailsFk"
-		pictureColHeader			= "Picture"
-		for footwearSelectionPriKey in footwearSelectionFks:
-			footwearDesignFks.append( footwearSelectionDAO.selectAColumn(footwearDesignFkColHeader, footwearSelectionPriKey) )
-			pictures.append( footwearSelectionDAO.selectAColumn(pictureColHeader, footwearSelectionPriKey) )
+		selections = footwearSelectionDAO.selectDistinct("Selection")
+
+		queryResult = list()
+		for selection in selections:
+
+			footwearDesigns = list()
+
+			for entry in footwearSelectionDAO.selectEntries("Selection", selection):
+				footwearDesigns.append(entry[1])
+
+			for footwearDesign in footwearDesigns:
+				footwearDesignDAO = FootwearDesignDAO(connector)
+				entry = footwearDesignDAO.selectAnEntry(footwearDesign)
+
+				queryResult.append((selection, entry[1], entry[2], entry[3], entry[4]))
+
+		return queryResult
 
 
-		footwearDesignDAO = FootwearDesignDAO(connector)
+	# given a selection for one item, return barcode, size, gender, availability
+	def getSecondPageInfo(self, selection):
 
-		productNames 	= list()
-		costs			= list()
-		productNameColHeader 	= "ProductName"
-		costColHeader			= "Cost"
-		for footwearDesignPriKey in footwearDesignFks:
-			productNames.append( footwearDesignDAO.selectAColumn(productNameColHeader, footwearDesignPriKey) )
-			costs.append( footwearDesignDAO.selectAColumn(costColHeader, footwearDesignPriKey) )
-
-		
-		firstPageInfo = list()
-		for i in range(0, len(barcodes)):
-			firstPageInfo.append( (productNames[i], costs[i], pictures[i]) )
-
-		return firstPageInfo
-
-
-	# given a barcode for one item to display on the second page of the app,
-	# return Product name, brand name, description, cost, picture, gender, size, availability
-	def getSecondPageInfo(self, barcode):
-
-		dbConnect = DbConnect(BarcodeDAO.getDbDir())
+		dbConnect = DbConnect(FootwearSelectionDAO.getDbDir())
 		connector = dbConnect.getConnection()
 
+		footwearSelectionDAO = FootwearSelectionDAO(connector)
+		footwearSelectionPriKeys = footwearSelectionDAO.getPriKeys("Selection", selection)
+
+		retVal = list()
 
 		barcodeDAO = BarcodeDAO(connector)
+		for footwearSelectionPriKey in footwearSelectionPriKeys:
+			entries = barcodeDAO.selectEntries("FootwearSelectionDetailsFk", footwearSelectionPriKey)
 
-		barcodePriKey 			= barcodeDAO.getPriKeys("Barcode", barcode)[0]
-		footwearSelectionFk 	= barcodeDAO.selectAColumn("FootwearSelectionDetailsFk", barcodePriKey)
-		usSize 					= barcodeDAO.selectAColumn("US_size", barcodePriKey)
-		eurSize 				= barcodeDAO.selectAColumn("EUR_size", barcodePriKey)
-		ukSize 					= barcodeDAO.selectAColumn("UK_size", barcodePriKey)
-		gender 					= barcodeDAO.selectAColumn("Gender", barcodePriKey)
+			barcodePriKey = entries[0]
 
+			inventoryDAO = InventoryDAO(connector)
+			inventories = inventoryDAO.getPriKeys("BarcodeDetailsFk", barcodePriKey)
 
-		footwearSelectionDAO = FootwearSelectionDAO(connector)
+			for entry in entries:
+				retVal.append((entry[1], entry[3], entry[4], entry[5], entry[6], len(inventories) ) )
 
-		footwearDesignFk 	= footwearSelectionDAO.selectAColumn("FootwearDesignDetailsFk", footwearSelectionFk)
-		picture 			= footwearSelectionDAO.selectAColumn("Picture", footwearSelectionFk)
-
-
-		footwearDesignDAO = FootwearDesignDAO(connector)
-
-		productName 	= footwearDesignDAO.selectAColumn("ProductName", footwearDesignFk)
-		brandName 		= footwearDesignDAO.selectAColumn("BrandName", footwearDesignFk)
-		description 	= footwearDesignDAO.selectAColumn("Description", footwearDesignFk)
-		cost 			= footwearDesignDAO.selectAColumn("Cost", footwearDesignFk)
-
-
-		numInventory = self.__numItemsAvailable(connector, barcode)
-
-		return (productName, brandName, description, cost, picture, gender, usSize, eurSize, ukSize, numInventory)
+		return retVal
 
 
 	# given the customerId, barcode and quantity, check whether the requested number of
