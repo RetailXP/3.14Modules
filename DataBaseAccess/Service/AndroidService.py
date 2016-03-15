@@ -15,6 +15,13 @@ class AndroidService:
 	# one connection per transaction, pass connector as a parameter
 
 	# given a barcode, it should return the number of items that are not reserved
+	def numItemsAvailable(self, barcode):
+		dbConnect = DbConnect(FootwearSelectionDAO.getDbDir())
+		connector = dbConnect.getConnection()
+
+		self.__numItemsAvailable(connector, barcode)
+
+
 	def __numItemsAvailable(self, connector, barcode):
 
 		barcodeDAO = BarcodeDAO(connector)
