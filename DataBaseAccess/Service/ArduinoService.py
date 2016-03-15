@@ -83,7 +83,7 @@ class ArduinoService:
 		virtualCartDAO.update(virtualCartRowId, "NumItemAvailableForPickup", numItemsForPickup+1)
 
 	# determine deposit location
-	# [x_index, y_index, x_encoder]
+	# [x_index, y_index, x_encoder, y_encoder]
 	def getDepositLocation(self):
 
 		dbConnect = DbConnect(InventoryDAO.getDbDir())

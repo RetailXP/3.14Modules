@@ -5,12 +5,14 @@ from DAO.BarcodeDAO import BarcodeDAO
 from DAO.InventoryDAO import InventoryDAO
 from .DbConnect import DbConnect
 
-# def testNumItemsAvailable():
-# 	dbConnect = DbConnect(BarcodeDAO.getDbDir())
-# 	connector = dbConnect.getConnection()
+def testNumItemsAvailable():
+	dbConnect = DbConnect(BarcodeDAO.getDbDir())
+	connector = dbConnect.getConnection()
 
-# 	service = AndroidService()
-# 	print(service.numItemsAvailable(connector, "Barcode1"))
+	service = AndroidService()
+	print(service.numItemsAvailable(1))
+	print("===================================================")
+	print("Testing numItemsAvailable-------------------complete\n\n\n")
 
 def testGetFirstPageInfo():
 	dbConnect = DbConnect(BarcodeDAO.getDbDir())
@@ -47,7 +49,7 @@ def testReserveInventoryIfAvailable():
 
 
 def main():
-	# testNumItemsAvailable()
+	testNumItemsAvailable()
 	testGetFirstPageInfo()
 	testGetSecondPageInfo()
 	testReserveInventoryIfAvailable()

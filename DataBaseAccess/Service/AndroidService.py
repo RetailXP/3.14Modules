@@ -29,14 +29,12 @@ class AndroidService:
 		barcodePriKey = barcodeDAO.getPriKeys(barcodeColHeader, barcode)[0]
 
 		inventoryDAO = InventoryDAO(connector)
-		barcodeDetailsFkColHeader = "BarcodeDetailsFk"
-		checkoutFlagColHeader ="CheckoutFlag"
 		numItems = 0
 
-		barcodesInInventory = inventoryDAO.getPriKeys(barcodeDetailsFkColHeader, barcodePriKey)
+		barcodesInInventory = inventoryDAO.getPriKeys("BarcodeDetailsFk", barcodePriKey)
 
 		for barcodeInInventory in barcodesInInventory:
-			if inventoryDAO.selectAColumn(checkoutFlagColHeader, barcodeInInventory) == 0:
+			if inventoryDAO.selectAColumn("CheckoutFlag", barcodeInInventory) == 0:
 				numItems += 1
 
 		return numItems
