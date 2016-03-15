@@ -1,14 +1,15 @@
-from ArduinoSerialInterface import ArduinoSerialInterface
-
 class AdminTask:
 
 	def __init__(self):
-		self.robotQueue = list()
-		self.tabletQueue = list()
+		self.tabletComm = TCPServlet()
+		self.robotComm = ArduinoComm()
+		self.msgQueue = queue.Queue(0)  # infinite queue size
 
-def main():
-	pass
+		self.main()
 
+	def main(self):
 
-if __name__ == "__main__":
-	main()
+		while True:
+			self.msgQueue.put(self.tabletComm.getMsgQueue())
+			if not self.msgQueue.empty():
+				self.robotComm.enqueue(self.msgQueue)
