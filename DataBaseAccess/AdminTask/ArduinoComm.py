@@ -1,4 +1,5 @@
 import serial
+import threading
 import time
 import queue
 from AdminTask.MessageParser import *
@@ -7,16 +8,16 @@ from AdminTask.MessageFormat import *
 from Service.ArduinoService import ArduinoService
 
 
-class ArduinoComm(Thread):
+class ArduinoComm(threading.Thread):
 
 	# timeout=None causes the serial connection to wait forever
-	def __init__(self, serialPort, baudRate, timeout=None):
-		Thread.__init__(self)
+	def __init__(self, serialPort, baudrate, timeout=None):
+		threading.Thread.__init__(self)
 
 		self.__ser = serial.Serial(port=serialPort, baudrate=baudrate, timeout=timeout)
 
-		self.msgQueue = queue.Queue(0)  # infinite queue size
-		self.msgInProcess = None		# msg received
+		self.msgQueue = queue.Queue(maxsize=0)  # infinite queue size
+		self.msgInProcess = None		# msg received	
 
 		self.start()
 
@@ -30,6 +31,10 @@ class ArduinoComm(Thread):
 			self.msgQueue.put(queue.get())
 
 	def run(self):
+
+		time.sleep(5)
+
+		print("Starting!!!")
 
 		while True:
 
@@ -79,6 +84,7 @@ class ArduinoComm(Thread):
 
 				self.msgInProcess = [MessageFormat.depInv, (barcode, x_idx, y_idx, x_enc, y_enc)]
 
+
 			try:
 				encodedMsg = txMsg.encode()
 			except CorruptData as details:
@@ -86,10 +92,14 @@ class ArduinoComm(Thread):
 
 
 			for byte in encodedMsg:
-				self.__ser.write(byte)
+				print("writing: " + str(hex(byte)))
+				self.__ser.write(bytes(byte))
 
 
 			## receiving message from arduino
+			print("start receiving messages")
+
+
 			msgParser = MessageParser()
 
 			isCompleteMsg = False
@@ -98,7 +108,11 @@ class ArduinoComm(Thread):
 				parseResult = msgParser.parseMsg(msgByte)
 				isCompleteMsg = parseResult[0]
 
+				print("parsing Msgs: " + str(hex(msgByte)))
+
 			parseResult = msgParser.getRetVal()		# [True, msgType, msgContent]
+
+			print(parseResult[2])
 
 			msgType = parseResult[1]
 			msgContent = parseResult[2]
