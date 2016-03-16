@@ -19,7 +19,7 @@ class AndroidService:
 		dbConnect = DbConnect(FootwearSelectionDAO.getDbDir())
 		connector = dbConnect.getConnection()
 
-		self.__numItemsAvailable(connector, barcode)
+		return self.__numItemsAvailable(connector, barcode)
 
 
 	def __numItemsAvailable(self, connector, barcode):
