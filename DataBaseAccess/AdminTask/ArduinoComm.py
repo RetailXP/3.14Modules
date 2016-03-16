@@ -93,7 +93,7 @@ class ArduinoComm(threading.Thread):
 
 			for byte in encodedMsg:
 				print("writing: " + str(hex(byte)))
-				self.__ser.write(bytes(byte))
+				self.__ser.write(bytes([byte]))
 
 
 			## receiving message from arduino
