@@ -41,8 +41,10 @@ def testReserveInventoryIfAvailable():
 
 	service = AndroidService()
 	print(sys._getframe().f_code.co_name + ": ")
-	print( service.reserveInventoryIfAvailable(1, 1, 2) )
-	print( service.reserveInventoryIfAvailable(1, 1, 1000) )
+	print( service.reserveInventoryIfAvailable(1, 1, 1) )
+	print( service.numItemsAvailable(1) )
+	print( service.reserveInventoryIfAvailable(1, 1, 1) )
+	print( service.numItemsAvailable(1) )
 	print("===================================================")
 	print("Testing reserveInventoryIfAvailable--------complete\n\n\n")
 
