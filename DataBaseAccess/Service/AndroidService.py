@@ -19,7 +19,7 @@ class AndroidService:
 		dbConnect = DbConnect(FootwearSelectionDAO.getDbDir())
 		connector = dbConnect.getConnection()
 
-		self.__numItemsAvailable(connector, barcode)
+		return self.__numItemsAvailable(connector, barcode)
 
 
 	def __numItemsAvailable(self, connector, barcode):
@@ -115,7 +115,7 @@ class AndroidService:
 
 
 		inventoryDAO = InventoryDAO(connector)
-		inventoryPriKeys = inventoryDAO.getPriKeys("BarcodeDetailsFk", barcodePriKey)
+		inventoryEntries = inventoryDAO.selectEntries("BarcodeDetailsFk", barcodePriKey)
 
 
 		virtualCartDAO = VirtualCartDAO(connector)
@@ -123,12 +123,22 @@ class AndroidService:
 
 
 		reservedInventoryLoc = list()
-		for index in range(0, quantity):
-			reservedInventoryId = inventoryPriKeys[index]
-			inventoryDAO.update(reservedInventoryId, "CheckoutFlag", 1)
+
+		reserveCount = 0
+		for inventoryEntry in inventoryEntries:
+
+			if reserveCount == quantity:
+				break
+
+			if inventoryEntry[6] != 0:
+				continue
+
+			inventoryDAO.update(inventoryEntry[0], "CheckoutFlag", 1)
 
 			# [inventoryDetailsId, barcodeDetailsFk, X_index, Y_index, X_encoder, Y_encoder, checkoutFlag]
-			entry = inventoryDAO.selectAnEntry(reservedInventoryId)
+			entry = inventoryDAO.selectAnEntry(inventoryEntry[0])
+
 			reservedInventoryLoc.append(entry[0:1]+entry[2:6]) # omit barcodeDetailsFk and checkoutFlag
+			reserveCount += 1
 
 		return (True, reservedInventoryLoc, newVirtualCartRowId)
