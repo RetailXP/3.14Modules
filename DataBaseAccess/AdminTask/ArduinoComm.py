@@ -122,7 +122,7 @@ class ArduinoComm(threading.Thread):
 					robotService.processRetrievedInventory(msg.invInfoRowId, msg.virtCartId)
 
 				elif msgType == MessageFormat.depInv:
-					msg = DepInvA2P()
+					msg = DepoInvA2P()
 					msg.decode(msgContent)
 					#(barcode, x_index, y_index, x_encoder, y_encoder):
 					txMsgContent = self.msgInProcess[1]
