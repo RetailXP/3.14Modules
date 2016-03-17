@@ -27,10 +27,14 @@ class ArduinoComm(threading.Thread):
 	# if a Queue is passed, the passed queue will be empty by the end of this operation
 	# the msgQueue format is [msgType, (msgContent)]
 	def enqueue(self, queue):
+		print("ArduinoComm::enqueue")
+
 		while not queue.empty():
 			self.msgQueue.put(queue.get())
 
 	def run(self):
+		print("ArduinoComm::Starting")
+
 
 		# wait for initialization
 		time.sleep(5)

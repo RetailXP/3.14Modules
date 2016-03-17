@@ -118,7 +118,7 @@ class TCPServlet(threading.Thread):
                         print("Barcode: " + parsed_data["Barcode"])
                         # Special case where JSON isn't used, just return a number
                         # Not sure if need to strip barcode, it's supposed to be a number
-                        # barcode = (parsed_data["Barcode"]).strip()
+                        barcode = (parsed_data["Barcode"]).strip()
                         response = self.service.numItemsAvailable(barcode);
                         print("Availability: " + str(response))
                     elif request_type == "Order":
@@ -137,7 +137,8 @@ class TCPServlet(threading.Thread):
                         # restock a shoe
                         # no need for a response
                         print("Barcode: " + parsed_data["Barcode"])
-                        queued = (MessageFormat.depInv, str(parsed_data["Barcode"]))
+                        barcode_string = str(parsed_data["Barcode"])
+                        queued = (MessageFormat.depInv, int(barcode_string))
                         self.msgQueue.put(queued)
                     # Need to append newline character so that it sends properly
                     print("Response: " + str(response))

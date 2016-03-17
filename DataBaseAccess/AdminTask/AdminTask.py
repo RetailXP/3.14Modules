@@ -11,27 +11,32 @@ import threading
 class AdminTask(threading.Thread):
 
 	def __init__(self):
+		threading.Thread.__init__(self)
+
 		self.tabletComm = TCPServlet()
+		self.tabletComm.start()
 		self.robotComm = ArduinoComm()
 		self.msgQueue = queue.Queue(0)  # infinite queue size
 
 		self.start()
 
 	def getMsgFromTablet(self):
+		print("AdminTask::getMsgFromTablet")
 		tabletQueue = self.tabletComm.getMsgQueue()
 		while not tabletQueue.empty():
 			self.msgQueue.put(tabletQueue.get())
 
 	def enqueueToRobot(self):
+		print("AdminTask::enqueueToRobot")
 		while not self.msgQueue.empty():
 			msg = self.msgQueue.get()
 
 			if msg[0] == MessageFormat.retInv:
-				for info in msg[1]:
+				for info in msg[1][1]:
 					robotService = ArduinoService()
 					encAbove = robotService.getLocationBoxAbove(info[0])
 					aQueue = queue.Queue(0)
-					aQueue.put([MessageFormat.retInv, (msg[0], list(info)+encAbove, msg[2]) ])
+					aQueue.put([MessageFormat.retInv, (msg[0], list(info)+encAbove, msg[1][2]) ])
 
 					self.robotComm.enqueue(aQueue)
 
@@ -42,7 +47,8 @@ class AdminTask(threading.Thread):
 
 				self.robotComm.enqueue(aQueue)
 
-	def main(self):
+	def run(self):
+		print("AdminTask::run")
 
 		while True:
 			
