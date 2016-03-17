@@ -32,9 +32,8 @@ class ArduinoComm(threading.Thread):
 
 	def run(self):
 
+		# wait for initialization
 		time.sleep(5)
-
-		print("Starting!!!")
 
 		while True:
 
@@ -90,7 +89,6 @@ class ArduinoComm(threading.Thread):
 			except CorruptData as details:
 				print(details)
 
-
 			for byte in encodedMsg:
 				print("writing: " + str(hex(byte)))
 				self.__ser.write(bytes([byte]))
@@ -105,14 +103,12 @@ class ArduinoComm(threading.Thread):
 			isCompleteMsg = False
 			while not isCompleteMsg:
 				msgByte = self.__ser.read(1)		# blocking i/o with infinite timeout
-				parseResult = msgParser.parseMsg(msgByte)
+				parseResult = msgParser.parseMsg((int.from_bytes(msgByte, byteorder='big', signed=False)))
 				isCompleteMsg = parseResult[0]
 
-				print("parsing Msgs: " + str(hex(msgByte)))
+				print("parsing Msgs: " + str(hex(int.from_bytes(msgByte, byteorder='big', signed=False) ) ) )
 
 			parseResult = msgParser.getRetVal()		# [True, msgType, msgContent]
-
-			print(parseResult[2])
 
 			msgType = parseResult[1]
 			msgContent = parseResult[2]
@@ -123,18 +119,18 @@ class ArduinoComm(threading.Thread):
 				if msgType == MessageFormat.retInv:
 					msg = RetInvA2P()
 					msg.decode(msgContent)
-					service.processRetrievedInventory(msg.invInfoRowId, msg.virtCartId)
+					robotService.processRetrievedInventory(msg.invInfoRowId, msg.virtCartId)
 
 				elif msgType == MessageFormat.depInv:
 					msg = DepInvA2P()
 					msg.decode(msgContent)
 					#(barcode, x_index, y_index, x_encoder, y_encoder):
 					txMsgContent = self.msgInProcess[1]
-					service.depositInventory(txMsgContent[0],
-											 txMsgContent[1],
-											 txMsgContent[2],
-											 txMsgContent[3],
-											 txMsgContent[4])
+					robotService.depositInventory(txMsgContent[0],
+											      txMsgContent[1],
+											      txMsgContent[2],
+											      txMsgContent[3],
+											      txMsgContent[4])
 
 				elif msgType == MessageFormat.homeRobot:
 					msg = HomeRobotA2P()

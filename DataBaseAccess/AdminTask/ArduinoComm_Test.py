@@ -1,19 +1,46 @@
 from AdminTask.ArduinoComm import ArduinoComm
 from AdminTask.MessageFormat import MessageFormat
+from Service.AndroidService import AndroidService
+from Service.ArduinoService import ArduinoService
 import queue
+import time
 
 def main():
-	arduinoComm = ArduinoComm("/dev/tty.usbmodemfd121", baudrate=9600, timeout=None)
+
+	tabletService = AndroidService()
+
+	# (True, [inventoryDetailsId, X_index, Y_index, X_encoder, Y_encoder]..., newVirtualCartRowId)
+	reservationInfo2 = tabletService.reserveInventoryIfAvailable(1, 2, 1)
+	reservationInfo1 = tabletService.reserveInventoryIfAvailable(1, 1, 1)
+
+	print(reservationInfo1)
+	print(reservationInfo2)
+
 
 	aQueue = queue.Queue(maxsize=0)
+
+	arduinoComm = ArduinoComm("/dev/tty.usbmodemfa131", baudrate=9600, timeout=None)
+
 
 	# [ MessageFormat.retInv
 	#  (True, 
 	#  [inventoryDetailsId, barcodeDetailsFk, X_index, Y_index, X_encoder, Y_encoder, checkoutFlag],
 	#  newVirtualCartRowId)
 	# ]
-	aQueue.put([MessageFormat.retInv, [True, (1, 2, 3, 4, 5, 6, 7), 1]])
 
+	robotService = ArduinoService()
+	
+	for info in reservationInfo2[1]:
+		encAbove = robotService.getLocationBoxAbove(info[0])
+		aQueue.put([MessageFormat.retInv, (reservationInfo2[0], list(info)+encAbove, reservationInfo2[2]) ])
+	arduinoComm.enqueue(aQueue)
+
+	time.sleep(5)
+
+	for info in reservationInfo1[1]:
+		encAbove = robotService.getLocationBoxAbove(info[0])
+
+		aQueue.put([MessageFormat.retInv, (reservationInfo1[0], list(info)+encAbove, reservationInfo1[2])])
 	arduinoComm.enqueue(aQueue)
 
 

@@ -75,6 +75,7 @@ class ArduinoService:
 					inventoryDAO.update(sameStackItemId, yEncoderColHeader, curYEncoder-encoderOffset)
 
 		inventoryDAO.delete(inventoryInfoRowId)
+		print("inventory deleted!!!")
 
 
 		virtualCartDAO = VirtualCartDAO(connector)
