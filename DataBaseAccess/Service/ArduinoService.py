@@ -108,7 +108,7 @@ class ArduinoService:
 
 		# the way stocking works for column 0 is different from column 1 and 2
 		if newXIdx != 0 and newYIdx == 2:
-			return [newxIdx, newYIdx, x_encoder, 179500]
+			return [newxIdx, newYIdx, x_encoder, 36000]
 
 		# !TODO: CHANGE THIS
 		maxBoxSize = InventoryInfo.sc_maxBoxSize

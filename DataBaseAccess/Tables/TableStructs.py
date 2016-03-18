@@ -59,7 +59,7 @@ class BarcodeDetails(BaseTableStruct):
 
 class InventoryInfo(BaseTableStruct):
 
-	sc_maxBoxSize = 200
+	sc_maxBoxSize = 9500
 	sc_maxXIndex = 3-1
 	sc_maxYIndex = 5-1
 
