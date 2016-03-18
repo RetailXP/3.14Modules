@@ -21,7 +21,7 @@ def main():
 
 	aQueue = queue.Queue(maxsize=0)
 
-	arduinoComm = ArduinoComm("/dev/tty.usbmodemfa131", baudrate=9600, timeout=None)
+	arduinoComm = ArduinoComm("/dev/ttyACM0", baudrate=9600, timeout=None)
 
 
 	# [ MessageFormat.retInv

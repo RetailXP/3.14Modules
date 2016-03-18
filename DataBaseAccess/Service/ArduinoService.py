@@ -104,7 +104,7 @@ class ArduinoService:
 		newXIdx = x_idx
 		newYIdx = len(oneStackEntries)
 		x_encoder = ArduinoService.sc_xEncodingValues[newXIdx]
-		y_encoder = 0
+		y_encoder = 6700
 
 		# the way stocking works for column 0 is different from column 1 and 2
 		if newXIdx != 0 and newYIdx == 2:
@@ -113,7 +113,7 @@ class ArduinoService:
 		# !TODO: CHANGE THIS
 		maxBoxSize = InventoryInfo.sc_maxBoxSize
 
-		maxY_encoder = 0
+		maxY_encoder = 6700
 		if newYIdx > 0:
 			for item in oneStackEntries:
 				if maxY_encoder < item[5]:

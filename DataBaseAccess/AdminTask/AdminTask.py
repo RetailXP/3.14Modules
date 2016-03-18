@@ -15,7 +15,7 @@ class AdminTask(threading.Thread):
 
 		self.tabletComm = TCPServlet()
 		self.tabletComm.start()
-		self.robotComm = ArduinoComm()
+		self.robotComm = ArduinoComm("/dev/ttyACM0", 9600)
 		self.msgQueue = queue.Queue(0)  # infinite queue size
 
 		self.start()
