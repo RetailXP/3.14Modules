@@ -5,9 +5,13 @@ class BaseDAO:
 	def getDbDir():
 		# return "/Users/jeongwonchoi/Desktop/University_of_Waterloo/4YDP/4B/GitHub/3.14Modules/DataBaseAccess/test.db"
 		# return "/Users/jeongwon/Desktop/University_of_Waterloo/4YDP/4B/gitdir/3.14Modules/DataBaseAccess/test.db"
+<<<<<<< HEAD
 		return "/home/jc/Desktop/4YDP/GithubDir/3.14Modules/DataBaseAccess/test.db"
 		# return "/home/pi/Desktop/4YDP/3.14Modules/DataBaseAccess/test.db"
 
+=======
+        return "/Users/jeongwon/Desktop/University_of_Waterloo/4YDP/4B/gitdir/3.14Modules/DataBaseAccess/Production.db"
+>>>>>>> cbf23aea54cb3c654301fd8d4248ebf4fd635972
 
 	def __init__(self, connection, tableName, columnHeaders):
 		self.__connector 		= connection

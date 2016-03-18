@@ -11,8 +11,7 @@ from Tables.TableStructs import *
 
 class ArduinoService:
 
-	# TODO: THIS SHOULD BE MODIFIED
-	sc_xEncodingValues = (50, 100, 150)
+	sc_xEncodingValues = (0, 22000, 42000)
 
 	def getLocationBoxAbove(self, inventoryDetailsId):
 
@@ -106,6 +105,10 @@ class ArduinoService:
 		newYIdx = len(oneStackEntries)
 		x_encoder = ArduinoService.sc_xEncodingValues[newXIdx]
 		y_encoder = 0
+
+		# the way stocking works for column 0 is different from column 1 and 2
+		if newXIdx != 0 and newYIdx == 2:
+			return [newxIdx, newYIdx, x_encoder, 179500]
 
 		# !TODO: CHANGE THIS
 		maxBoxSize = InventoryInfo.sc_maxBoxSize

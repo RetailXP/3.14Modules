@@ -61,7 +61,7 @@ class InventoryInfo(BaseTableStruct):
 
 	sc_maxBoxSize = 200
 	sc_maxXIndex = 3-1
-	sc_maxYIndex = 6-1
+	sc_maxYIndex = 5-1
 
 	def __init__(self):
 
